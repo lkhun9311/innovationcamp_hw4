@@ -33,7 +33,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + 300000L))
+                .setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + 1800000L))
                 .signWith(SignatureAlgorithm.HS256, this.secretKey).compact();
     }
 
