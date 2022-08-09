@@ -37,6 +37,16 @@ public class ContentsController {
         return contents;
     }
 
+    @PutMapping("/api/contents/{contentId}")
+    public Response<String> updateContent(@PathVariable(name = "contentId") Long contentId, @RequestBody ContentsRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return Response.success("로그인이 필요합니다.");
+        } else {
+            Long updateId = this.ContentsService.updateContent(contentId, requestDto);
+            return Response.success("Id " + updateId + "번 게시글의 내용을 변경했습니다.");
+        }
+    }
+
     @PostMapping("/api/contents/{contentId}/user/{userId}/like")
     public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId, @PathVariable(name = "userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
