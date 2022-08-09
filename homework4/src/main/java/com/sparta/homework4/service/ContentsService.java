@@ -10,6 +10,7 @@ import com.sparta.homework4.repository.ContentsRepository;
 import com.sparta.homework4.repository.ReplyRepository;
 import com.sparta.homework4.repository.UserRepository;
 import com.sparta.homework4.util.response.ContentsNotFound;
+import com.sparta.homework4.util.response.Response;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -61,24 +62,23 @@ public class ContentsService {
     }
 
     @Transactional
-    public Long update(Long id, ContentsRequestDto requestDto) {
-        Contents Contents = (Contents)this.ContentsRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("아이디가 존재하지 않습니다.");
-        });
-        Contents.update(requestDto);
-        return Contents.getId();
+    public Response<String> updateContent(Long ContentId, ContentsRequestDto requestDto, String userName) {
+        Contents content = (Contents)this.ContentsRepository.findById(ContentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        if (Objects.equals(content.getName(), userName)) {
+            content.update(requestDto);
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 수정했습니다.").build();
+        } else {
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
+        }
     }
 
     public void deleteContent(Long ContentId, String userName) {
-        String writer = ((Contents)this.ContentsRepository.findById(ContentId).orElseThrow(() -> {
-            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
-        })).getName();
-        if (Objects.equals(writer, userName)) {
+        Contents content = ((Contents)this.ContentsRepository.findById(ContentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")));
+        if (Objects.equals(content.getName(), userName)) {
             this.ContentsRepository.deleteById(ContentId);
-        } else {
-            new IllegalArgumentException("작성한 유저가 아닙니다.");
         }
-
     }
 
     public ContentsService(ContentsRepository ContentsRepository, ReplyRepository ReplyRepository, ContentLikeRepository contentLikeRepository, UserRepository userRepository) {
