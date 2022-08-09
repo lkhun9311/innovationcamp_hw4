@@ -25,7 +25,7 @@ public class ContentsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Contents createContents(ContentsRequestDto requestDto, String username) {
+    public Response<String> createContents(ContentsRequestDto requestDto, String username) {
         String contentsCheck = requestDto.getContents();
         String titleCheck = requestDto.getTitle();
         Contents contents;
@@ -33,16 +33,16 @@ public class ContentsService {
             if (!titleCheck.contains("script") && !titleCheck.contains("<") && !titleCheck.contains(">")) {
                 contents = new Contents(requestDto, username);
                 this.ContentsRepository.save(contents);
-                return contents;
+                return Response.<String>builder().status(200).data("게시글 작성을 완료했습니다.").build();
             } else {
                 contents = new Contents("xss 안돼요,,하지마세요ㅠㅠ", username, "xss 안돼요,,하지마세요ㅠㅠ");
                 this.ContentsRepository.save(contents);
-                return contents;
+                return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
             }
         } else {
             contents = new Contents(requestDto, username, "xss 안돼요,,하지마세요ㅠㅠ");
             this.ContentsRepository.save(contents);
-            return contents;
+            return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
     }
 
