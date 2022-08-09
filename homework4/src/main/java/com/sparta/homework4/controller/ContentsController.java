@@ -27,9 +27,8 @@ public class ContentsController {
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping({"/api/contents/{id}"})
     public Contents getContents(@PathVariable Long id) {
-        Contents contents = (Contents)this.ContentsRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("id가 존재하지 않습니다.");
-        });
+        Contents contents = (Contents)this.ContentsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
         return contents;
     }
 
