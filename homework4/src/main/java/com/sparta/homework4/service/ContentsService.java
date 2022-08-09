@@ -73,11 +73,14 @@ public class ContentsService {
         }
     }
 
-    public void deleteContent(Long ContentId, String userName) {
+    public Response<String> deleteContent(Long ContentId, String userName) {
         Contents content = ((Contents)this.ContentsRepository.findById(ContentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")));
         if (Objects.equals(content.getName(), userName)) {
             this.ContentsRepository.deleteById(ContentId);
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 삭제했습니다.").build();
+        } else {
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
         }
     }
 

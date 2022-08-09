@@ -56,12 +56,13 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping("/api/contents/{contentId}")
-    public Response<String> deleteContent(@PathVariable(name = "contentId") Long contentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> deleteContent(
+            @PathVariable(name = "contentId") Long contentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
-            this.ContentsService.deleteContent(contentId, userDetails.getUsername());
-            return Response.success("게시글을 삭제했습니다.");
+            return this.ContentsService.deleteContent(contentId, userDetails.getUsername());
         }
     }
 
