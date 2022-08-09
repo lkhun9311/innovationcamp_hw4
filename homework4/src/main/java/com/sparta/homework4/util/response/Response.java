@@ -8,13 +8,13 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SuccessResponse<T> {
-    private String message;
+public class Response<T> {
+    private int status;
     private T data;
 
-    public static <T> SuccessResponse<T> success(T data) {
-        return SuccessResponse.<T>builder()
-                .message("success")
+    public static <T> Response<T> success(T data) {
+        return Response.<T>builder()
+                .status(200)
                 .data(data)
                 .build();
     }
