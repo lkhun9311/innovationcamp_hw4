@@ -1,10 +1,8 @@
 package com.sparta.homework4.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User extends Timestamped {
@@ -52,5 +50,12 @@ public class User extends Timestamped {
     }
 
     public User() {
+    }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ContentLike> contentLikeList = new ArrayList<>();
+
+    public void mapToContentLike(ContentLike contentLike) {
+        this.contentLikeList.add(contentLike);
     }
 }

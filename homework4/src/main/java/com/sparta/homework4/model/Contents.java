@@ -3,26 +3,26 @@ package com.sparta.homework4.model;
 import com.sparta.homework4.dto.ContentsRequestDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String title;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String name;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String contents;
+
+    @Column(nullable = false)
+    private long contentLikeCount;
 
     public Contents(String title, String username, String contents) {
         this.title = title;
@@ -72,4 +72,20 @@ public class Contents extends Timestamped {
 
     public Contents() {
     }
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<ContentLike> contentLikeList = new ArrayList<>();
+
+    public void mapToContentLike(ContentLike contentLike){
+        this.contentLikeList.add(contentLike);
+    }
+
+    public void updateLikeCount(){
+        this.contentLikeCount = (long) this.contentLikeList.size();
+    }
+
+    public void discountLike(ContentLike contentLike){
+        this.contentLikeList.remove(contentLike);
+    }
+
 }

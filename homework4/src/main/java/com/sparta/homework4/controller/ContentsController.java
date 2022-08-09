@@ -6,6 +6,8 @@ import com.sparta.homework4.model.Contents;
 import com.sparta.homework4.repository.ContentsRepository;
 import com.sparta.homework4.security.UserDetailsImpl;
 import com.sparta.homework4.service.ContentsService;
+import com.sparta.homework4.util.response.SuccessResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,15 @@ public class ContentsController {
         return contents;
     }
 
-    public ContentsController(com.sparta.homework4.repository.ContentsRepository ContentsRepository, com.sparta.homework4.service.ContentsService ContentsService) {
-        this.ContentsRepository = ContentsRepository;
-        this.ContentsService = ContentsService;
+    @PostMapping("/api/contents/{contentId}/user/{userId}/like")
+    @PreAuthorize("isAuthenticated()")
+    public SuccessResponse<String> contentLike(@PathVariable(name = "contentId") Long contentId, @PathVariable(name = "userId") Long userId){
+        ContentsService.contentLike(contentId, userId);
+        return SuccessResponse.success(null);
+    }
+
+    public ContentsController(ContentsRepository contentsRepository, ContentsService contentsService) {
+        this.ContentsRepository = contentsRepository;
+        this.ContentsService = contentsService;
     }
 }
