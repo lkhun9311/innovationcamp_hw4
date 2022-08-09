@@ -44,7 +44,6 @@ public class Contents extends Timestamped {
 
     public void update(ContentsRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.name = requestDto.getName();
         this.contents = requestDto.getContents();
     }
 
