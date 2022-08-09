@@ -35,7 +35,9 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping({"/api/contents"})
-    public Contents createContents(@RequestBody ContentsRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Contents createContents(
+            @RequestBody ContentsRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String username = userDetails.getUser().getUsername();
         Contents contents = this.ContentsService.createContents(requestDto, username);
         return contents;
@@ -68,7 +70,10 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping("/api/contents/{contentId}/user/{userId}/like")
-    public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId, @PathVariable(name = "userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> contentLike(
+            @PathVariable(name = "contentId") Long contentId,
+            @PathVariable(name = "userId") Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
