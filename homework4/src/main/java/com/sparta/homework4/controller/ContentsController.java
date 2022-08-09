@@ -34,12 +34,15 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping({"/api/contents"})
-    public Contents createContents(
+    public Response<String> createContents(
             @RequestBody ContentsRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
-        Contents contents = this.ContentsService.createContents(requestDto, username);
-        return contents;
+        if (userDetails == null) {
+            return Response.success("로그인이 필요합니다.");
+        } else {
+            String username = userDetails.getUser().getUsername();
+            return this.ContentsService.createContents(requestDto, username);
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
