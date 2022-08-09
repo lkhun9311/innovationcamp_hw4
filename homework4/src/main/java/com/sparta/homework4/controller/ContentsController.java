@@ -6,6 +6,7 @@ import com.sparta.homework4.model.Contents;
 import com.sparta.homework4.repository.ContentsRepository;
 import com.sparta.homework4.security.UserDetailsImpl;
 import com.sparta.homework4.service.ContentsService;
+import com.sparta.homework4.util.response.Response;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +37,18 @@ public class ContentsController {
         return contents;
     }
 
-    public ContentsController(com.sparta.homework4.repository.ContentsRepository ContentsRepository, com.sparta.homework4.service.ContentsService ContentsService) {
-        this.ContentsRepository = ContentsRepository;
-        this.ContentsService = ContentsService;
+    @PostMapping("/api/contents/{contentId}/user/{userId}/like")
+    public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId, @PathVariable(name = "userId") Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return Response.success("로그인이 필요합니다.");
+        } else {
+            ContentsService.contentLike(contentId, userId);
+            return Response.success("success");
+        }
+    }
+
+    public ContentsController(ContentsRepository contentsRepository, ContentsService contentsService) {
+        this.ContentsRepository = contentsRepository;
+        this.ContentsService = contentsService;
     }
 }
