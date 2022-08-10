@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
