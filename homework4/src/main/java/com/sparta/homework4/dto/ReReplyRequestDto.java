@@ -6,7 +6,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class ReReplyRequestDto {
-    private Long postid;
-    private Long replyId;
     private String reReply;
 }

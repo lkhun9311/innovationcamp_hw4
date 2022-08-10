@@ -23,6 +23,9 @@ public class User extends Timestamped {
     private List<Reply> replyList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReReply> reReplyList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
 
     public User() {
@@ -51,6 +54,10 @@ public class User extends Timestamped {
 
     public void mapToReply(Reply reply) {
         replyList.add(reply);
+    }
+
+    public void mapToReReply(ReReply reReply) {
+        reReplyList.add(reReply);
     }
 
     public void mapToContentLike(ContentLike contentLike) {
