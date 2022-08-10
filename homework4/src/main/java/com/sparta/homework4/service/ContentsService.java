@@ -58,7 +58,7 @@ public class ContentsService {
 
         while(var3.hasNext()) {
             Contents content = (Contents)var3.next();
-            int countReply = this.ReplyRepository.countByPostid(content.getId());
+            Long countReply = this.ReplyRepository.countByContentsId(content.getId());
             ContentsResponseDto contentsResponseDto = ContentsResponseDto.builder().content(content).countReply(countReply).build();
             listContents.add(contentsResponseDto);
         }
@@ -122,7 +122,6 @@ public class ContentsService {
             contents.discountLike(byContentsAndUser.get());
             contents.updateLikeCount();
             contentLikeRepository.delete(byContentsAndUser.get());
-//            contentLikeRepository.save(contentLike);
         } else {
             contentLike.mapToContent(contents);
             contentLike.mapToUser(user);

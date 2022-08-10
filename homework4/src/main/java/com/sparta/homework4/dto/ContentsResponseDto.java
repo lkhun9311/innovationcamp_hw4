@@ -10,13 +10,11 @@ public class ContentsResponseDto {
     private String title;
     private String name;
     private String contents;
-    @JsonFormat(
-            pattern = "yyyy-MM-dd HH:mm:ss"
-    )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime modifiedAt;
-    private int countReply;
+    private Long countReply;
 
-    public ContentsResponseDto(Contents content, int countReply) {
+    public ContentsResponseDto(Contents content, Long countReply) {
         this.id = content.getId();
         this.title = content.getTitle();
         this.name = content.getName();
@@ -29,33 +27,9 @@ public class ContentsResponseDto {
         return new ContentsResponseDtoBuilder();
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getContents() {
-        return this.contents;
-    }
-
-    public LocalDateTime getModifiedAt() {
-        return this.modifiedAt;
-    }
-
-    public int getCountReply() {
-        return this.countReply;
-    }
-
     public static class ContentsResponseDtoBuilder {
         private Contents content;
-        private int countReply;
+        private Long countReply;
 
         ContentsResponseDtoBuilder() {
         }
@@ -65,7 +39,7 @@ public class ContentsResponseDto {
             return this;
         }
 
-        public ContentsResponseDtoBuilder countReply(int countReply) {
+        public ContentsResponseDtoBuilder countReply(Long countReply) {
             this.countReply = countReply;
             return this;
         }
