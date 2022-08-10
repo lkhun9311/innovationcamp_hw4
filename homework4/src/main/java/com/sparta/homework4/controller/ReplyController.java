@@ -21,7 +21,8 @@ public class ReplyController {
     }
 
     @PostMapping({"/api/reply"})
-    public String createReply(@RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String createReply(@RequestBody ReplyRequestDto requestDto,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
@@ -33,7 +34,9 @@ public class ReplyController {
     }
 
     @PutMapping({"/api/reply/{id}"})
-    public String updateReply(@PathVariable Long id, @RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String updateReply(@PathVariable Long id,
+                              @RequestBody ReplyRequestDto requestDto,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
@@ -45,7 +48,8 @@ public class ReplyController {
     }
 
     @DeleteMapping({"/api/reply/{replyId}"})
-    public String deleteReply(@PathVariable Long replyId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String deleteReply(@PathVariable Long replyId,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String result = this.ReplyService.deleteReply(replyId, userId);
@@ -55,7 +59,7 @@ public class ReplyController {
         }
     }
 
-    public ReplyController(com.sparta.homework4.repository.ReplyRepository ReplyRepository, com.sparta.homework4.service.ReplyService ReplyService) {
+    public ReplyController(ReplyRepository ReplyRepository, ReplyService ReplyService) {
         this.ReplyRepository = ReplyRepository;
         this.ReplyService = ReplyService;
     }

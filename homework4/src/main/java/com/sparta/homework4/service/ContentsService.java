@@ -84,7 +84,10 @@ public class ContentsService {
         }
     }
 
-    public ContentsService(ContentsRepository ContentsRepository, ReplyRepository ReplyRepository, ContentLikeRepository contentLikeRepository, UserRepository userRepository) {
+    public ContentsService(ContentsRepository ContentsRepository,
+                           ReplyRepository ReplyRepository,
+                           ContentLikeRepository contentLikeRepository,
+                           UserRepository userRepository) {
         this.ContentsRepository = ContentsRepository;
         this.ReplyRepository = ReplyRepository;
         this.contentLikeRepository = contentLikeRepository;
