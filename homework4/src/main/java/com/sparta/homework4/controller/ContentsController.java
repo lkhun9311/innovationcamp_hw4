@@ -39,8 +39,9 @@ public class ContentsController {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
+            Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            return this.ContentsService.createContents(requestDto, username);
+            return this.ContentsService.createContents(requestDto, username, userId);
         }
     }
 

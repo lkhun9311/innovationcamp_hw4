@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 public class User extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
@@ -49,7 +49,17 @@ public class User extends Timestamped {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Contents> contentList = new ArrayList<>();
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<Reply> replyList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
+
+    public void mapToContents(Contents contents) {
+        contentList.add(contents);
+    }
 
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
