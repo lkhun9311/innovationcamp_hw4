@@ -39,9 +39,9 @@ public class ReReply extends Timestamped {
         this.username = username;
     }
 
-    public ReReply(String username, String reReply) {
-        this.username = username;
+    public ReReply(String reReply, String username) {
         this.reReply = reReply;
+        this.username = username;
     }
 
     public void update(ReReplyRequestDto requestDto) {
