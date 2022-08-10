@@ -1,6 +1,8 @@
 package com.sparta.homework4.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.homework4.dto.ReplyRequestDto;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
+@Getter
 @Entity
 public class Reply extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +24,14 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private String reply;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_contents_reply"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_reply"))
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_user_reply"))
+    @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_contents_reply"))
     private Contents contents;
 
     @OneToMany(fetch = LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)

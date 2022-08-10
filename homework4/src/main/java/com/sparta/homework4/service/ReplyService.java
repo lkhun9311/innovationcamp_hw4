@@ -23,8 +23,8 @@ public class ReplyService {
     private final ContentsRepository contentsRepository;
     private final ReplyRepository ReplyRepository;
 
-    public List<Reply> getReply(Long ContentsId) {
-        return this.ReplyRepository.findAllByContentsIdOrderByCreatedAtDesc(ContentsId);
+    public List<Reply> getReply(Long contentsId) {
+        return this.ReplyRepository.findAllByContentsIdOrderByCreatedAtDesc(contentsId);
     }
 
     @Transactional

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
     List<Reply> findAllByContentsIdOrderByCreatedAtDesc(Long contentsId);
 
-    Long countByContentsId(Long id);
+    Long countByContentsId(Long var1);
 }
