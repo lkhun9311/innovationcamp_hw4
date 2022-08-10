@@ -18,9 +18,9 @@ public class ReplyController {
     private final ReplyService ReplyService;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/reply/{postId}"})
-    public List<Reply> getReply(@PathVariable Long postId) {
-        return this.ReplyService.getReply(postId);
+    @GetMapping({"/api/contents/{contentsId}/reply"})
+    public List<Reply> getReply(@PathVariable Long contentsId) {
+        return this.ReplyService.getReply(contentsId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -38,30 +38,28 @@ public class ReplyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping({"/api/reply/{id}"})
-    public String updateReply(@PathVariable Long id,
+    @PutMapping({"/api/contents/{contentsId}/reply"})
+    public Response<String> updateReply(@PathVariable(name = "contentsId") Long contentsId,
                               @RequestBody ReplyRequestDto requestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            String result = this.ReplyService.update(id, requestDto, username, userId);
-            return result;
+            return this.ReplyService.update(contentsId, requestDto, username, userId);
         } else {
-            return "로그인이 필요한 기능입니다.";
+            return Response.success("로그인이 필요합니다.");
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping({"/api/reply/{replyId}"})
-    public String deleteReply(@PathVariable Long replyId,
+    @DeleteMapping({"/api/contents/{contentsId}/reply"})
+    public Response<String> deleteReply(@PathVariable(name = "contentsId") Long contentsId,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            String result = this.ReplyService.deleteReply(replyId, userId);
-            return result;
+            return this.ReplyService.deleteReply(contentsId, userId);
         } else {
-            return "로그인이 필요한 기능입니다.";
+            return Response.success("로그인이 필요합니다.");
         }
     }
 

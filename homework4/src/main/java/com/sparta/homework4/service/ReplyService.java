@@ -33,7 +33,8 @@ public class ReplyService {
         User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
 
         Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
-        Contents contents = byContentsId.orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
+        Contents contents = byContentsId
+                .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
         String replyCheck = requestDto.getReply();
         Reply reply;
@@ -41,7 +42,7 @@ public class ReplyService {
             reply = new Reply(requestDto, username);
             reply.mapToContentsAndUser(contents, user);
             this.ReplyRepository.save(reply);
-            return Response.<String>builder().status(200).data("댓글 작성을 완료했습니다.").build();
+            return Response.<String>builder().status(200).data(reply.getUserId()+"번 댓글 작성을 완료했습니다.").build();
         } else {
             reply = new Reply("xss 안돼요,, 하지마세요ㅠㅠ", username);
             this.ReplyRepository.save(reply);
@@ -50,28 +51,29 @@ public class ReplyService {
     }
 
     @Transactional
-    public String update(Long id, ReplyRequestDto requestDto, String username, Long userId) {
-        Reply reply = (Reply)this.ReplyRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("존재하지 않습니다.");
-        });
+    public Response<String> update(Long contentsId, ReplyRequestDto requestDto, String username, Long userId) {
+        Reply reply = (Reply)this.ReplyRepository.findById(contentsId)
+                .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
         Long writerId = reply.getUserId();
         if (Objects.equals(writerId, userId)) {
             reply.update(requestDto);
-            return "댓글 수정 완료";
+            return Response.<String>builder().status(200).data(reply.getUserId()+"번 댓글을 수정했습니다.").build();
         } else {
-            return "작성한 유저가 아닙니다.";
+            return Response.<String>builder().status(200).data(reply.getUserId()+"번 댓글의 작성자가 아닙니다.").build();
         }
     }
 
-    public String deleteReply(Long replyId, Long userId) {
-        Long writerId = ((Reply)this.ReplyRepository.findById(replyId).orElseThrow(() -> {
-            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
+    public Response<String> deleteReply(Long contentsId, Long userId) {
+        Reply reply = (Reply)this.ReplyRepository.findById(contentsId)
+                .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
+        Long writerId = ((Reply)this.ReplyRepository.findById(contentsId).orElseThrow(() -> {
+            return new IllegalArgumentException("해당 게시글이 삭제되었거나 존재하지 않습니다.");
         })).getUserId();
         if (Objects.equals(writerId, userId)) {
-            this.ReplyRepository.deleteById(replyId);
-            return "댓글 삭제 완료";
+            this.ReplyRepository.deleteById(contentsId);
+            return Response.<String>builder().status(200).data(reply.getUserId()+"번 댓글을 삭제했습니다.").build();
         } else {
-            return "작성한 유저가 아닙니다.";
+            return Response.<String>builder().status(200).data(reply.getUserId()+"번 댓글의 작성자가 아닙니다.").build();
         }
     }
 
