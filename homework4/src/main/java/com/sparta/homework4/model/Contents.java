@@ -30,6 +30,9 @@ public class Contents extends Timestamped {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_contents"))
     private User user;
 
+    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<Reply> replyList = new ArrayList<>();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
 
@@ -43,23 +46,6 @@ public class Contents extends Timestamped {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
-    }
-
-    public Contents(ContentsRequestDto requestDto, String username) {
-        this.title = requestDto.getTitle();
-        this.name = username;
-        this.contents = requestDto.getContents();
-    }
-
-    public void update(ContentsRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
-    }
-
-    public Contents(ContentsRequestDto requestDto, String username, String contents) {
-        this.title = requestDto.getTitle();
-        this.name = username;
-        this.contents = contents;
     }
 
     public Long getId() {
@@ -80,9 +66,30 @@ public class Contents extends Timestamped {
 
     public Contents() {}
 
+    public Contents(ContentsRequestDto requestDto, String username) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = requestDto.getContents();
+    }
+
+    public Contents(ContentsRequestDto requestDto, String username, String contents) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = contents;
+    }
+
+    public void update(ContentsRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+    }
+
     public void mapToUser(User user) {
         this.user = user;
         user.mapToContents(this);
+    }
+
+    public void mapToReply(Reply reply) {
+        this.replyList.add(reply);
     }
 
     public void mapToContentLike(ContentLike contentLike){
