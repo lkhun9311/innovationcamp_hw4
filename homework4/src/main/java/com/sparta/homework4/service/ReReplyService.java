@@ -28,8 +28,8 @@ public class ReReplyService {
     private final ReplyRepository replyRepository;
     private final ReReplyRepository reReplyRepository;
 
-    public List<ReReply> getReReply(Long replyId){
-        return this.reReplyRepository.findAllByReplyIdOrderByCreatedAtDesc(replyId);
+    public List<ReReply> getReReply(Long replyId, Long contentsId){
+        return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
     }
 
     @Transactional

@@ -20,7 +20,7 @@ public class ReReplyController {
 
     @GetMapping("/api/contents/{contentsId}/reply/{replyId}")
     public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId, @PathVariable(name = "replyId") Long replyId){
-        return this.reReplyService.getReReply(replyId);
+        return this.reReplyService.getReReply(replyId, contentsId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
