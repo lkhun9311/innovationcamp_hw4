@@ -6,6 +6,8 @@ import com.sparta.homework4.repository.ReplyRepository;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
+
+import com.sparta.homework4.util.response.Response;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,17 +19,17 @@ public class ReplyService {
     }
 
     @Transactional
-    public Reply createReply(ReplyRequestDto requestDto, String username, Long userId) {
+    public Response<String> createReply(ReplyRequestDto requestDto, String username, Long userId) {
         String replyCheck = requestDto.getReply();
         Reply reply;
         if (!replyCheck.contains("script") && !replyCheck.contains("<") && !replyCheck.contains(">")) {
             reply = new Reply(requestDto, username, userId);
             this.ReplyRepository.save(reply);
-            return reply;
+            return Response.<String>builder().status(200).data("댓글 작성을 완료했습니다.").build();
         } else {
             reply = new Reply(requestDto, username, userId, "xss 안돼요,, 하지마세요ㅠㅠ");
             this.ReplyRepository.save(reply);
-            return reply;
+            return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
     }
 

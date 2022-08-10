@@ -5,6 +5,7 @@ import com.sparta.homework4.model.Reply;
 import com.sparta.homework4.repository.ReplyRepository;
 import com.sparta.homework4.security.UserDetailsImpl;
 import com.sparta.homework4.service.ReplyService;
+import com.sparta.homework4.util.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +25,14 @@ public class ReplyController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping({"/api/reply"})
-    public String createReply(@RequestBody ReplyRequestDto requestDto,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> createReply(@RequestBody ReplyRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            this.ReplyService.createReply(requestDto, username, userId);
-            return "댓글 작성 완료";
+            return this.ReplyService.createReply(requestDto, username, userId);
         } else {
-            return "로그인이 필요한 기능입니다.";
+            return Response.success("로그인이 필요합니다.");
         }
     }
 
