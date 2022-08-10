@@ -24,13 +24,14 @@ public class ReplyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/reply"})
-    public Response<String> createReply(@RequestBody ReplyRequestDto requestDto,
+    @PostMapping({"/api/contents/{contentsId}/reply"})
+    public Response<String> createReply(@PathVariable(name = "contentsId") Long contentsId,
+                                        @RequestBody ReplyRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            return this.ReplyService.createReply(requestDto, username, userId);
+            return this.ReplyService.createReply(contentsId, requestDto, username, userId);
         } else {
             return Response.success("로그인이 필요합니다.");
         }
