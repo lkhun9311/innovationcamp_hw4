@@ -10,6 +10,7 @@ import com.sparta.homework4.repository.ContentsRepository;
 import com.sparta.homework4.repository.ReplyRepository;
 import com.sparta.homework4.repository.UserRepository;
 import com.sparta.homework4.util.response.ContentsNotFound;
+import com.sparta.homework4.util.response.Response;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class ContentsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Contents createContents(ContentsRequestDto requestDto, String username) {
+    public Response<String> createContents(ContentsRequestDto requestDto, String username) {
         String contentsCheck = requestDto.getContents();
         String titleCheck = requestDto.getTitle();
         Contents contents;
@@ -32,16 +33,16 @@ public class ContentsService {
             if (!titleCheck.contains("script") && !titleCheck.contains("<") && !titleCheck.contains(">")) {
                 contents = new Contents(requestDto, username);
                 this.ContentsRepository.save(contents);
-                return contents;
+                return Response.<String>builder().status(200).data("게시글 작성을 완료했습니다.").build();
             } else {
                 contents = new Contents("xss 안돼요,,하지마세요ㅠㅠ", username, "xss 안돼요,,하지마세요ㅠㅠ");
                 this.ContentsRepository.save(contents);
-                return contents;
+                return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
             }
         } else {
             contents = new Contents(requestDto, username, "xss 안돼요,,하지마세요ㅠㅠ");
             this.ContentsRepository.save(contents);
-            return contents;
+            return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
     }
 
@@ -61,24 +62,26 @@ public class ContentsService {
     }
 
     @Transactional
-    public Long update(Long id, ContentsRequestDto requestDto) {
-        Contents Contents = (Contents)this.ContentsRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("아이디가 존재하지 않습니다.");
-        });
-        Contents.update(requestDto);
-        return Contents.getId();
+    public Response<String> updateContent(Long ContentId, ContentsRequestDto requestDto, String userName) {
+        Contents content = (Contents)this.ContentsRepository.findById(ContentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        if (Objects.equals(content.getName(), userName)) {
+            content.update(requestDto);
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 수정했습니다.").build();
+        } else {
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
+        }
     }
 
-    public void deleteContent(Long ContentId, String userName) {
-        String writer = ((Contents)this.ContentsRepository.findById(ContentId).orElseThrow(() -> {
-            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
-        })).getName();
-        if (Objects.equals(writer, userName)) {
+    public Response<String> deleteContent(Long ContentId, String userName) {
+        Contents content = ((Contents)this.ContentsRepository.findById(ContentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")));
+        if (Objects.equals(content.getName(), userName)) {
             this.ContentsRepository.deleteById(ContentId);
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 삭제했습니다.").build();
         } else {
-            new IllegalArgumentException("작성한 유저가 아닙니다.");
+            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
         }
-
     }
 
     public ContentsService(ContentsRepository ContentsRepository, ReplyRepository ReplyRepository, ContentLikeRepository contentLikeRepository, UserRepository userRepository) {
