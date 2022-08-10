@@ -6,26 +6,20 @@ import javax.persistence.*;
 
 @Entity
 public class Reply extends Timestamped {
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private Long postid;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String username;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String reply;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private Long userId;
 
     public Reply(ReplyRequestDto requestDto, String username, Long userId) {

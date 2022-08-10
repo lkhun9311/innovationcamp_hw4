@@ -69,8 +69,7 @@ public class Contents extends Timestamped {
         return this.contents;
     }
 
-    public Contents() {
-    }
+    public Contents() {}
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();

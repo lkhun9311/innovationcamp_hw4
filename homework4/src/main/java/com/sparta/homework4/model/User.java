@@ -6,18 +6,14 @@ import java.util.List;
 
 @Entity
 public class User extends Timestamped {
-    @GeneratedValue(
-            strategy = GenerationType.AUTO
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String username;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private String password;
 
     public User(String username, String password) {
