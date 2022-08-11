@@ -7,10 +7,6 @@ public class ReplyRequestDto {
     public ReplyRequestDto() {
     }
 
-    public Long getPostid() {
-        return this.postid;
-    }
-
     public String getReply() {
         return this.reply;
     }

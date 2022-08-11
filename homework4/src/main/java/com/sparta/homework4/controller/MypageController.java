@@ -26,8 +26,6 @@ public class MypageController {
         this.ReplyRepository = replyRepository;
     }
 
-
-
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping({"/api/mypage/reply"})
     private List<Reply> getMyReply(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -52,7 +50,4 @@ public class MypageController {
             return null;
         }
     }
-
-
-
 }

@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface ReReplyRepository extends JpaRepository<ReReply, Long> {
     List<ReReply> findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(Long replyId, Long contentsId);
-
-    int countByReplyId(Long var1);
 }
