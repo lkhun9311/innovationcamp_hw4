@@ -8,6 +8,7 @@ import com.sparta.homework4.service.ReReplyService;
 import com.sparta.homework4.util.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,14 +18,15 @@ public class ReReplyController {
     private final ReReplyRepository reReplyRepository;
     private final ReReplyService reReplyService;
 
-    @GetMapping("/api/contents/{contentsId}/reply/{replyId}")
-
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/api/contents/{contentsId}/replys/{replyId}/rereplys")
     public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId, @PathVariable(name = "replyId") Long replyId){
         return this.reReplyService.getReReply(replyId, contentsId);
     }
 
+    @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents/{contentsId}/reply/{replyId}"})
+    @PostMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys"})
     public Response<String> createReReply(@PathVariable(name="contentsId") Long contentsId,
                                           @PathVariable(name="replyId") Long replyId,
                                           @RequestBody ReReplyRequestDto requestDto,
@@ -38,33 +40,32 @@ public class ReReplyController {
         }
     }
 
+    @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping({"/api/contents/{contentsId}/reply/{replyId}/{id}"})
+    @PutMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys/{rereplyId}"})
     public String updateReReply(@PathVariable(name="contentsId") Long contentsId,
                                 @PathVariable(name="replyId") Long replyId,
-                                @PathVariable(name="id") Long id,
+                                @PathVariable(name="rereplyId") Long rereplyId,
                               @RequestBody ReReplyRequestDto requestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            String username = userDetails.getUser().getUsername();
-            String result = this.reReplyService.update(id, requestDto, username, userId);
-            return result;
+            return this.reReplyService.update(rereplyId, requestDto, userId, contentsId, replyId);
         } else {
             return "로그인이 필요한 기능입니다.";
         }
     }
 
+    @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping({"/api/contents/{contentsId}/reply/{replyId}/{id}"})
+    @DeleteMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys/{rereplyId}"})
     public String deleteReply(@PathVariable(name="contentsId") Long contentsId,
                               @PathVariable(name="replyId") Long replyId,
-                              @PathVariable(name="id") Long id,
+                              @PathVariable(name="rereplyId") Long rereplyId,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            String result = this.reReplyService.deleteReply(id, replyId, userId);
-            return result;
+            return this.reReplyService.deleteReply(rereplyId, replyId, contentsId, userId);
         } else {
             return "로그인이 필요한 기능입니다.";
         }
