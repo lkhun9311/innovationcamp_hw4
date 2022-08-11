@@ -28,6 +28,9 @@ public class Contents extends Timestamped {
     private long countReply;
 
     @Column(nullable = false)
+    private long countReReply;
+
+    @Column(nullable = false)
     private long contentLikeCount;
 
     @Column(nullable = false)
@@ -62,11 +65,18 @@ public class Contents extends Timestamped {
         this.image = image;
     }
 
-    public Contents(String title, String username, String contents, Long countReply, Long contentLikeCount, Long replyLikeCount) {
+    public Contents(String title,
+                    String username,
+                    String contents,
+                    Long countReply,
+                    Long countReReply,
+                    Long contentLikeCount,
+                    Long replyLikeCount) {
         this.title = title;
         this.name = username;
         this.contents = contents;
         this.countReply = countReply;
+        this.countReReply = countReReply;
         this.contentLikeCount = contentLikeCount;
         this.replyLikeCount = replyLikeCount;
     }
@@ -98,6 +108,10 @@ public class Contents extends Timestamped {
 
     public Long getCountReply() {
         return this.countReply;
+    }
+
+    public Long getCountReReply() {
+        return this.countReReply;
     }
 
     public Long getContentLikeCount() {
@@ -137,13 +151,11 @@ public class Contents extends Timestamped {
         replyList.add(reply);
     }
 
-    public void mapToReplyRemove(Reply reply) {
-        replyList.remove(reply);
-    }
+    public void mapToReplyRemove(Reply reply) { replyList.remove(reply); }
 
-    public void mapToReReply(ReReply reReply) {
-        this.reReplyList.add(reReply);
-    }
+    public void mapToReReply(ReReply reReply) { reReplyList.add(reReply); }
+
+    public void mapToReReplyRemove(ReReply reReply) { reReplyList.remove(reReply); }
 
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
@@ -153,9 +165,9 @@ public class Contents extends Timestamped {
         this.replyLikeList.add(replyLike);
     }
 
-    public void updateReplyCount() {
-        this.countReply = (long) this.replyList.size();
-    }
+    public void updateReplyCount() { this.countReply = (long) this.replyList.size(); }
+
+    public void updateReReplyCount() { this.countReReply = (long) this.reReplyList.size(); }
 
     public void updateLikeCount() {
         this.contentLikeCount = (long) this.contentLikeList.size();
