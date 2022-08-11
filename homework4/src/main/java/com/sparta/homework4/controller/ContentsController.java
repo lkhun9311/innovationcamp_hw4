@@ -69,13 +69,13 @@ public class ContentsController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/user/{userId}/like")
+    @PostMapping("/api/contents/{contentId}/like")
     public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId,
-                                        @PathVariable(name = "userId") Long userId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
+            Long userId = userDetails.getUser().getId();
             ContentsService.contentLike(contentId, userId);
             return Response.success("success");
         }
