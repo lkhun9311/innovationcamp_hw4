@@ -1,6 +1,8 @@
 package com.sparta.homework4.controller;
 
+import com.sparta.homework4.dto.ContentsResponseDto;
 import com.sparta.homework4.dto.ReplyRequestDto;
+import com.sparta.homework4.dto.ReplyResponseDto;
 import com.sparta.homework4.model.Reply;
 import com.sparta.homework4.security.UserDetailsImpl;
 import com.sparta.homework4.service.ReplyService;
@@ -16,13 +18,13 @@ public class ReplyController {
     private final ReplyService ReplyService;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/contents/{contentsId}/reply"})
-    public List<Reply> getReply(@PathVariable Long contentsId) {
+    @GetMapping({"/api/contents/{contentsId}/replys"})
+    public List<ReplyResponseDto> getReply(@PathVariable Long contentsId) {
         return this.ReplyService.getReply(contentsId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents/{contentsId}/reply"})
+    @PostMapping({"/api/contents/{contentsId}/replys"})
     public Response<String> createReply(@PathVariable(name = "contentsId") Long contentsId,
                                         @RequestBody ReplyRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -36,7 +38,7 @@ public class ReplyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping({"/api/contents/{contentsId}/reply/{replyId}"})
+    @PutMapping({"/api/contents/{contentsId}/replys/{replyId}"})
     public Response<String> updateReply(@PathVariable(name = "contentsId") Long contentsId,
                                         @RequestBody ReplyRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -63,7 +65,7 @@ public class ReplyController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/Reply/{replyId}/like")
+    @PostMapping("/api/contents/{contentId}/replys/{replyId}/like")
     public Response<String> replyLike(@PathVariable(name = "contentId") Long contentId,
                                       @PathVariable(name = "replyId") Long replyId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
