@@ -1,9 +1,12 @@
 package com.sparta.homework4.service;
 
+import com.sparta.homework4.dto.ContentsResponseDto;
 import com.sparta.homework4.dto.ReplyRequestDto;
+import com.sparta.homework4.dto.ReplyResponseDto;
 import com.sparta.homework4.model.*;
 import com.sparta.homework4.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,11 +22,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReplyService {
     private final UserRepository userRepository;
     private final ContentsRepository contentsRepository;
-    private final ReplyRepository ReplyRepository;
+    private final ReplyRepository replyRepository;
+    private ReReplyRepository reReplyRepository;
     private final ReplyLikeRepository replyLikeRepository;
+    
+    @Transactional
+    public List<ReplyResponseDto> getReply(Long contentsId) {
+        Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
+        Contents contents = byContentsId
+                .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-    public List<Reply> getReply(Long ContentsId) {
-        return this.ReplyRepository.findAllByContentsIdOrderByCreatedAtDesc(ContentsId);
+        List<Reply> replys = replyRepository.findAllByContentsIdOrderByCreatedAtDesc(contentsId);
+        List<ReplyResponseDto> listReplys = new ArrayList<>();
+
+        for (Reply reply : replys) {
+            Long countReReply = reReplyRepository.countByReplyId(reply.getId());
+            ReplyResponseDto replyResponseDto = ReplyResponseDto.builder()
+                    .reply(reply)
+                    .countReReply(countReReply)
+                    .build();
+            listReplys.add(replyResponseDto);
+        }
+        return listReplys;
     }
 
     @Transactional
@@ -44,11 +64,11 @@ public class ReplyService {
             reply.mapToUser(user);
             reply.mapToContents(contents);
             contents.updateReplyCount();
-            this.ReplyRepository.save(reply);
+            this.replyRepository.save(reply);
             return Response.<String>builder().status(200).data("댓글 작성을 완료했습니다.").build();
         } else {
             reply = new Reply("xss 안돼요,, 하지마세요ㅠㅠ", username);
-            this.ReplyRepository.save(reply);
+            this.replyRepository.save(reply);
             return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
     }
@@ -58,7 +78,7 @@ public class ReplyService {
         Contents contents = this.contentsRepository.findById(contentsId)
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Reply reply = this.ReplyRepository.findById(replyId)
+        Reply reply = this.replyRepository.findById(replyId)
                 .orElseThrow(() -> new ReplyNotFound("해당 댓글이 삭제되었거나 존재하지 않습니다."));
 
         Long writerId = reply.getUserId();
@@ -81,13 +101,13 @@ public class ReplyService {
         Contents contents = byContentsId
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Optional<Reply> byReplyId = this.ReplyRepository.findById(replyId);
+        Optional<Reply> byReplyId = this.replyRepository.findById(replyId);
         Reply reply = byReplyId
                 .orElseThrow(() -> new ReplyNotFound("해당 댓글이 삭제되었거나 존재하지 않습니다."));
         Long writerId = byReplyId.get().getUserId();
 
         if (Objects.equals(writerId, userId)) {
-            ReplyRepository.deleteById(replyId);
+            replyRepository.deleteById(replyId);
             reply.mapToUserRemove(user);
             reply.mapToContentsRemove(contents);
             contents.updateReplyCount();
@@ -107,7 +127,7 @@ public class ReplyService {
         User user = byUserId
                 .orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
 
-        Optional<Reply> byReplyId = this.ReplyRepository.findById(replyId);
+        Optional<Reply> byReplyId = this.replyRepository.findById(replyId);
         Reply reply = byReplyId
                 .orElseThrow(() -> new ReplyNotFound("해당 댓글이 삭제되었거나 존재하지 않습니다."));
 
@@ -134,11 +154,13 @@ public class ReplyService {
 
     public ReplyService(UserRepository userRepository,
                         ContentsRepository contentsRepository,
-                        ReplyRepository ReplyRepository,
-                        ReplyLikeRepository replyLikeRepository) {
+                        ReplyRepository replyRepository,
+                        ReplyLikeRepository replyLikeRepository,
+                        ReReplyRepository reReplyRepository) {
         this.userRepository = userRepository;
         this.contentsRepository = contentsRepository;
-        this.ReplyRepository = ReplyRepository;
+        this.replyRepository = replyRepository;
+        this.reReplyRepository = reReplyRepository;
         this.replyLikeRepository = replyLikeRepository;
     }
 }
