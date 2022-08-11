@@ -137,10 +137,6 @@ public class Contents extends Timestamped {
         this.contents = requestDto.getContents();
     }
 
-    public void update(ContentsRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
-    }
 
     public void mapToUser(User user) {
         this.user = user;
@@ -187,4 +183,4 @@ public class Contents extends Timestamped {
         this.replyLikeList.remove(replyLike);
     }
 }
-}
+
