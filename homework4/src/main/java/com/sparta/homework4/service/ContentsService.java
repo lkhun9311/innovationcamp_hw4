@@ -13,8 +13,8 @@ import com.sparta.homework4.util.response.ContentsNotFound;
 import com.sparta.homework4.util.response.Response;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -91,7 +91,7 @@ public class ContentsService {
 
     private User getUserInService(Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
-        User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("게시글 작성 권한이 없습니다. 로그인이 필요합니다."));
+        User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
         return user;
     }
 
