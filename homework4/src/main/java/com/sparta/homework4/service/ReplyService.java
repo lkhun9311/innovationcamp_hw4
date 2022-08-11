@@ -25,7 +25,7 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private ReReplyRepository reReplyRepository;
     private final ReplyLikeRepository replyLikeRepository;
-    
+
     @Transactional
     public List<ReplyResponseDto> getReply(Long contentsId) {
         Optional<Contents> byContentsId = contentsRepository.findById(contentsId);

@@ -14,8 +14,8 @@ public class ContentsResponseDto {
     private String name;
     private String contents;
     private String image;
-
     private Long countReply;
+    private Long countReReply;
     private Long contentLikeCount;
     private Long replyLikeCount;
 
@@ -33,6 +33,7 @@ public class ContentsResponseDto {
         this.image = content.getImage();
         this.contentLikeCount = content.getContentLikeCount();
         this.countReply = countReply;
+        this.countReReply = content.getCountReReply();
         this.replyLikeCount = content.getReplyLikeCount();
         this.createdAt = content.getCreatedAt();
         this.modifiedAt = content.getModifiedAt();
