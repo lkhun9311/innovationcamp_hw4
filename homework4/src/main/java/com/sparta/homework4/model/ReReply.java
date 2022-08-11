@@ -58,8 +58,6 @@ public class ReReply extends Timestamped {
         this.contents = contents;
         this.user = user;
 
-        reply.mapToReReply(this);
-        contents.mapToReReply(this);
-        user.mapToReReply(this);
+
     }
 }
