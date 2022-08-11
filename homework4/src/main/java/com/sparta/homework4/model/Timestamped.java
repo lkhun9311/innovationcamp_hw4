@@ -16,17 +16,30 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners({AuditingEntityListener.class})
 public abstract class Timestamped {
     @CreatedDate
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    @JsonSerialize(
+            using = LocalDateTimeSerializer.class
+    )
+    @JsonDeserialize(
+            using = LocalDateTimeDeserializer.class
+    )
     private LocalDateTime createdAt;
     @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss"
+    )
+    @JsonSerialize(
+            using = LocalDateTimeSerializer.class
+    )
+    @JsonDeserialize(
+            using = LocalDateTimeDeserializer.class
+    )
     private LocalDateTime modifiedAt;
 
-    public Timestamped() {}
+    public Timestamped() {
+    }
 
     public LocalDateTime getCreatedAt() {
         return this.createdAt;

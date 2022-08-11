@@ -1,5 +1,6 @@
 package com.sparta.homework4.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.homework4.dto.ReReplyRequestDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +49,9 @@ public class ReReply extends Timestamped {
         this.reReply = requestDto.getReReply();
     }
 
-
     public void mapToReplyAndContentsAndUser(Reply reply, Contents contents, User user) {
         this.reply = reply;
         this.contents = contents;
         this.user = user;
-
-        reply.mapToReReply(this);
-        contents.mapToReReply(this);
-        user.mapToReReply(this);
     }
 }

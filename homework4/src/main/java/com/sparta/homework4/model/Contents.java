@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
@@ -20,6 +20,9 @@ public class Contents extends Timestamped {
 
     @Column(nullable = false)
     private String contents;
+
+    @Column(nullable = true)
+    private String image;
 
     @Column(nullable = false)
     private long countReply;
@@ -52,6 +55,13 @@ public class Contents extends Timestamped {
         this.contents = contents;
     }
 
+    public Contents(String title, String username, String contents, String image) {
+        this.title = title;
+        this.name = username;
+        this.contents = contents;
+        this.image = image;
+    }
+
     public Contents(String title, String username, String contents, Long countReply, Long contentLikeCount, Long replyLikeCount) {
         this.title = title;
         this.name = username;
@@ -65,11 +75,10 @@ public class Contents extends Timestamped {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
     }
 
-    public Long getId() {
-        return this.id;
-    }
+    public Long getId() { return this.id; }
 
     public String getTitle() {
         return this.title;
@@ -83,7 +92,13 @@ public class Contents extends Timestamped {
         return this.contents;
     }
 
-    public Long getCountReply() { return this.countReply; }
+    public String getImage() {
+        return this.image;
+    }
+
+    public Long getCountReply() {
+        return this.countReply;
+    }
 
     public Long getContentLikeCount() {
         return this.contentLikeCount;
@@ -99,6 +114,7 @@ public class Contents extends Timestamped {
         this.title = requestDto.getTitle();
         this.name = username;
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
     }
 
     public Contents(ContentsRequestDto requestDto, String username, String contents) {
@@ -129,23 +145,32 @@ public class Contents extends Timestamped {
         this.reReplyList.add(reReply);
     }
 
-    public void mapToContentLike(ContentLike contentLike){ this.contentLikeList.add(contentLike); }
+    public void mapToContentLike(ContentLike contentLike) {
+        this.contentLikeList.add(contentLike);
+    }
 
-    public void mapToReplyLike(ReplyLike replyLike){ this.replyLikeList.add(replyLike); }
+    public void mapToReplyLike(ReplyLike replyLike) {
+        this.replyLikeList.add(replyLike);
+    }
 
     public void updateReplyCount() {
         this.countReply = (long) this.replyList.size();
     }
 
-    public void updateLikeCount(){
+    public void updateLikeCount() {
         this.contentLikeCount = (long) this.contentLikeList.size();
     }
 
-    public void updateReplyLikeCount(){
+    public void updateReplyLikeCount() {
         this.replyLikeCount = (long) this.replyLikeList.size();
     }
 
-    public void discountLike(ContentLike contentLike){ this.contentLikeList.remove(contentLike); }
+    public void discountLike(ContentLike contentLike) {
+        this.contentLikeList.remove(contentLike);
+    }
 
-    public void discountReplyLike(ReplyLike replyLike){ this.replyLikeList.remove(replyLike); }
+    public void discountReplyLike(ReplyLike replyLike) {
+        this.replyLikeList.remove(replyLike);
+    }
 }
+

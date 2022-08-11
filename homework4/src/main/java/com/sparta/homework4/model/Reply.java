@@ -37,6 +37,10 @@ public class Reply extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
     private List<ReplyLike> replyLikeList = new ArrayList<>();
 
+    public Long getId() {
+        return this.id;
+    }
+
     public Long getUserId() {
         return user.getId();
     }

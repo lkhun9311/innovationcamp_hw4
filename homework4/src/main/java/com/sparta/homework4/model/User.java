@@ -31,8 +31,7 @@ public class User extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> replyLikeList = new ArrayList<>();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String username, String password) {
         this.username = username;
