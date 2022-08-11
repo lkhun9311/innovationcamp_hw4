@@ -39,7 +39,8 @@ public class ContentsController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
-        } else {
+        }
+        else {
             String username = userDetails.getUser().getUsername();
             return this.ContentsService.createContents(requestDto, username);
         }

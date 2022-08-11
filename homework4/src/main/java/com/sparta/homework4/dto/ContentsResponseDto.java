@@ -10,6 +10,7 @@ public class ContentsResponseDto {
     private String title;
     private String name;
     private String contents;
+    private String image;
     @JsonFormat(
             pattern = "yyyy-MM-dd HH:mm:ss"
     )
@@ -21,6 +22,7 @@ public class ContentsResponseDto {
         this.title = content.getTitle();
         this.name = content.getName();
         this.contents = content.getContents();
+        this.image = content.getImage();
         this.modifiedAt = content.getModifiedAt();
         this.countReply = countReply;
     }
@@ -44,6 +46,11 @@ public class ContentsResponseDto {
     public String getContents() {
         return this.contents;
     }
+
+    public String getImage() {
+        return this.image;
+    }
+
 
     public LocalDateTime getModifiedAt() {
         return this.modifiedAt;

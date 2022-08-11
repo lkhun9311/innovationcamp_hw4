@@ -22,6 +22,8 @@ public class Contents extends Timestamped {
     private String contents;
 
 
+    @Column(nullable = true)
+    private String image;
 
     @Column(nullable = false)
     private long contentLikeCount;
@@ -32,6 +34,7 @@ public class Contents extends Timestamped {
         this.title = title;
         this.name = username;
         this.contents = contents;
+        this.image = image;
 
     }
 
@@ -39,12 +42,14 @@ public class Contents extends Timestamped {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
     }
 
     public Contents(ContentsRequestDto requestDto, String username) {
         this.title = requestDto.getTitle();
         this.name = username;
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
 
     }
 
@@ -73,6 +78,10 @@ public class Contents extends Timestamped {
 
     public String getContents() {
         return this.contents;
+    }
+
+    public String getImage() {
+        return this.image;
     }
 
     public Contents() {
