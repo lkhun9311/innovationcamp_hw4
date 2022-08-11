@@ -15,6 +15,7 @@ import java.util.List;
 public class ReplyController {
     private final ReplyService ReplyService;
 
+
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping({"/api/contents/{contentsId}/reply"})
     public List<Reply> getReply(@PathVariable Long contentsId) {
@@ -65,4 +66,5 @@ public class ReplyController {
     public ReplyController(ReplyService ReplyService) {
         this.ReplyService = ReplyService;
     }
+
 }
