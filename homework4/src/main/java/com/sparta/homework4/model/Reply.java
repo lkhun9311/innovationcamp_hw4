@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class Reply extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +17,9 @@ public class Reply extends Timestamped {
 
     @Column(nullable = false)
     private String reply;
+
+    @Column(nullable = false)
+    private long countReReply;
 
     @Column(nullable = false)
     private long replyLikeCount;
@@ -53,12 +54,15 @@ public class Reply extends Timestamped {
         return this.reply;
     }
 
+    public Long getCountReReply() {
+        return this.countReReply;
+    }
+
     public Long getReplyLikeCount() {
         return this.replyLikeCount;
     }
 
-    public Reply() {
-    }
+    public Reply() {}
 
     public Reply(String reply, String username) {
         this.reply = reply;
@@ -85,8 +89,10 @@ public class Reply extends Timestamped {
         user.mapToReply(this);
     }
 
-    public void mapToReReply(ReReply reReply) {
-        this.reReplyList.add(reReply);
+    public void mapToReReply(ReReply reReply) { this.reReplyList.add(reReply); }
+
+    public void mapToReReplyRemove(ReReply reReply) {
+        this.reReplyList.remove(reReply);
     }
 
     public void mapToContents(Contents contents) {
@@ -105,6 +111,8 @@ public class Reply extends Timestamped {
     }
 
     public void mapToReplyLike(ReplyLike replyLike){ this.replyLikeList.add(replyLike); }
+
+    public void updateReReplyCount() { this.countReReply = (long) this.reReplyList.size(); }
 
     public void updateLikeCount(){ this.replyLikeCount = (long) this.replyLikeList.size(); }
 
