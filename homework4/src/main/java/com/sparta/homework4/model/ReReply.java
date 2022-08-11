@@ -1,5 +1,6 @@
 package com.sparta.homework4.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.homework4.dto.ReReplyRequestDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,15 @@ public class ReReply extends Timestamped {
     @Column(nullable = false)
     private String reReply;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply_id", foreignKey = @ForeignKey(name = "FK_rereply_reply"))
     private Reply reply;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_rereply_contents"))
     private Contents contents;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_rereply_user"))
     private User user;
 
@@ -48,14 +49,9 @@ public class ReReply extends Timestamped {
         this.reReply = requestDto.getReReply();
     }
 
-
     public void mapToReplyAndContentsAndUser(Reply reply, Contents contents, User user) {
         this.reply = reply;
         this.contents = contents;
         this.user = user;
-
-        reply.mapToReReply(this);
-        contents.mapToReReply(this);
-        user.mapToReReply(this);
     }
 }

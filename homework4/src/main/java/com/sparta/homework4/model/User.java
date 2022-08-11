@@ -28,8 +28,10 @@ public class User extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
 
-    public User() {
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> replyLikeList = new ArrayList<>();
+
+    public User() {}
 
     public User(String username, String password) {
         this.username = username;
@@ -56,6 +58,8 @@ public class User extends Timestamped {
         replyList.add(reply);
     }
 
+    public void mapToReplyRemove(Reply reply) { replyList.remove(reply); }
+
     public void mapToReReply(ReReply reReply) {
         reReplyList.add(reReply);
     }
@@ -63,4 +67,8 @@ public class User extends Timestamped {
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
     }
+
+    public void mapToReplyLike(ReplyLike replyLike) { this.replyLikeList.add(replyLike); }
+
+    public void discountReplyLike(ReplyLike replyLike) { this.replyLikeList.remove(replyLike); }
 }

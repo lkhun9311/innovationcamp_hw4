@@ -6,11 +6,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
@@ -23,21 +21,33 @@ public class Contents extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+    @Column(nullable = true)
+    private String image;
+
+    @Column(nullable = false)
+    private long countReply;
+
     @Column(nullable = false)
     private long contentLikeCount;
 
-    @ManyToOne(fetch = LAZY)
+    @Column(nullable = false)
+    private long replyLikeCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_contents"))
     private User user;
 
-    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<Reply> replyList = new ArrayList<>();
 
-    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ReReply> reReplyList = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> replyLikeList = new ArrayList<>();
 
     public Contents(String title, String username, String contents) {
         this.title = title;
@@ -45,15 +55,30 @@ public class Contents extends Timestamped {
         this.contents = contents;
     }
 
+    public Contents(String title, String username, String contents, String image) {
+        this.title = title;
+        this.name = username;
+        this.contents = contents;
+        this.image = image;
+    }
+
+    public Contents(String title, String username, String contents, Long countReply, Long contentLikeCount, Long replyLikeCount) {
+        this.title = title;
+        this.name = username;
+        this.contents = contents;
+        this.countReply = countReply;
+        this.contentLikeCount = contentLikeCount;
+        this.replyLikeCount = replyLikeCount;
+    }
+
     public Contents(ContentsRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
     }
 
-    public Long getId() {
-        return this.id;
-    }
+    public Long getId() { return this.id; }
 
     public String getTitle() {
         return this.title;
@@ -67,12 +92,29 @@ public class Contents extends Timestamped {
         return this.contents;
     }
 
+    public String getImage() {
+        return this.image;
+    }
+
+    public Long getCountReply() {
+        return this.countReply;
+    }
+
+    public Long getContentLikeCount() {
+        return this.contentLikeCount;
+    }
+
+    public Long getReplyLikeCount() {
+        return this.replyLikeCount;
+    }
+
     public Contents() {}
 
     public Contents(ContentsRequestDto requestDto, String username) {
         this.title = requestDto.getTitle();
         this.name = username;
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
     }
 
     public Contents(ContentsRequestDto requestDto, String username, String contents) {
@@ -92,22 +134,43 @@ public class Contents extends Timestamped {
     }
 
     public void mapToReply(Reply reply) {
-        this.replyList.add(reply);
+        replyList.add(reply);
+    }
+
+    public void mapToReplyRemove(Reply reply) {
+        replyList.remove(reply);
     }
 
     public void mapToReReply(ReReply reReply) {
         this.reReplyList.add(reReply);
     }
 
-    public void mapToContentLike(ContentLike contentLike){
+    public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
     }
 
-    public void updateLikeCount(){
+    public void mapToReplyLike(ReplyLike replyLike) {
+        this.replyLikeList.add(replyLike);
+    }
+
+    public void updateReplyCount() {
+        this.countReply = (long) this.replyList.size();
+    }
+
+    public void updateLikeCount() {
         this.contentLikeCount = (long) this.contentLikeList.size();
     }
 
-    public void discountLike(ContentLike contentLike){
+    public void updateReplyLikeCount() {
+        this.replyLikeCount = (long) this.replyLikeList.size();
+    }
+
+    public void discountLike(ContentLike contentLike) {
         this.contentLikeList.remove(contentLike);
     }
+
+    public void discountReplyLike(ReplyLike replyLike) {
+        this.replyLikeList.remove(replyLike);
+    }
 }
+

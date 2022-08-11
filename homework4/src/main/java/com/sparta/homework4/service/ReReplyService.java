@@ -1,7 +1,6 @@
 package com.sparta.homework4.service;
 
 import com.sparta.homework4.dto.ReReplyRequestDto;
-import com.sparta.homework4.dto.ReplyRequestDto;
 import com.sparta.homework4.model.Contents;
 import com.sparta.homework4.model.ReReply;
 import com.sparta.homework4.model.Reply;
@@ -12,7 +11,6 @@ import com.sparta.homework4.repository.ReplyRepository;
 import com.sparta.homework4.repository.UserRepository;
 import com.sparta.homework4.util.response.ContentsNotFound;
 import com.sparta.homework4.util.response.Response;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +29,6 @@ public class ReReplyService {
     public List<ReReply> getReReply(Long replyId, Long contentsId){
         return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
     }
-
 
     @Transactional
     public Response<String> createReReply(ReReplyRequestDto requestDto, Long contentsId, Long replyId, String username, Long userId){
@@ -85,7 +82,6 @@ public class ReReplyService {
             return "작성한 유저가 아닙니다.";
         }
     }
-
 
     public ReReplyService(UserRepository userRepository,
                         ContentsRepository contentsRepository,
