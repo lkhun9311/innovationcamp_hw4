@@ -25,22 +25,27 @@ public class ContentsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response<String> createContents(ContentsRequestDto requestDto, String username) {
+    public Response<String> createContents(ContentsRequestDto requestDto, String username, Long userId) {
+        User user = getUserInService(userId);
+
         String contentsCheck = requestDto.getContents();
         String titleCheck = requestDto.getTitle();
         Contents contents;
         if (!contentsCheck.contains("script") && !contentsCheck.contains("<") && !contentsCheck.contains(">")) {
             if (!titleCheck.contains("script") && !titleCheck.contains("<") && !titleCheck.contains(">")) {
                 contents = new Contents(requestDto, username);
+                contents.mapToUser(user);
                 this.ContentsRepository.save(contents);
                 return Response.<String>builder().status(200).data("게시글 작성을 완료했습니다.").build();
             } else {
                 contents = new Contents("xss 안돼요,,하지마세요ㅠㅠ", username, "xss 안돼요,,하지마세요ㅠㅠ");
+                contents.mapToUser(user);
                 this.ContentsRepository.save(contents);
                 return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
             }
         } else {
             contents = new Contents(requestDto, username, "xss 안돼요,,하지마세요ㅠㅠ");
+            contents.mapToUser(user);
             this.ContentsRepository.save(contents);
             return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
@@ -53,7 +58,7 @@ public class ContentsService {
 
         while(var3.hasNext()) {
             Contents content = (Contents)var3.next();
-            int countReply = this.ReplyRepository.countByPostid(content.getId());
+            Long countReply = this.ReplyRepository.countByContentsId(content.getId());
             ContentsResponseDto contentsResponseDto = ContentsResponseDto.builder().content(content).countReply(countReply).build();
             listContents.add(contentsResponseDto);
         }
@@ -84,7 +89,10 @@ public class ContentsService {
         }
     }
 
-    public ContentsService(ContentsRepository ContentsRepository, ReplyRepository ReplyRepository, ContentLikeRepository contentLikeRepository, UserRepository userRepository) {
+    public ContentsService(ContentsRepository ContentsRepository,
+                           ReplyRepository ReplyRepository,
+                           ContentLikeRepository contentLikeRepository,
+                           UserRepository userRepository) {
         this.ContentsRepository = ContentsRepository;
         this.ReplyRepository = ReplyRepository;
         this.contentLikeRepository = contentLikeRepository;
@@ -114,7 +122,6 @@ public class ContentsService {
             contents.discountLike(byContentsAndUser.get());
             contents.updateLikeCount();
             contentLikeRepository.delete(byContentsAndUser.get());
-//            contentLikeRepository.save(contentLike);
         } else {
             contentLike.mapToContent(contents);
             contentLike.mapToUser(user);

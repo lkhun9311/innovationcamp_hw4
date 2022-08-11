@@ -34,23 +34,22 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping({"/api/contents"})
-    public Response<String> createContents(
-            @RequestBody ContentsRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> createContents(@RequestBody ContentsRequestDto requestDto,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
+            Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            return this.ContentsService.createContents(requestDto, username);
+            return this.ContentsService.createContents(requestDto, username, userId);
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @PutMapping("/api/contents/{contentId}")
-    public Response<String> updateContent(
-            @PathVariable(name = "contentId") Long contentId,
-            @RequestBody ContentsRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> updateContent(@PathVariable(name = "contentId") Long contentId,
+                                          @RequestBody ContentsRequestDto requestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
@@ -60,9 +59,8 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping("/api/contents/{contentId}")
-    public Response<String> deleteContent(
-            @PathVariable(name = "contentId") Long contentId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> deleteContent(@PathVariable(name = "contentId") Long contentId,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
@@ -72,10 +70,9 @@ public class ContentsController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping("/api/contents/{contentId}/user/{userId}/like")
-    public Response<String> contentLike(
-            @PathVariable(name = "contentId") Long contentId,
-            @PathVariable(name = "userId") Long userId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId,
+                                        @PathVariable(name = "userId") Long userId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
             return Response.success("로그인이 필요합니다.");
         } else {
