@@ -1,7 +1,6 @@
 package com.sparta.homework4.model;
 
 import com.sparta.homework4.dto.ReplyRequestDto;
-
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
@@ -34,6 +33,10 @@ public class Reply extends Timestamped {
         return this.username;
     }
 
+    public String getReply() {
+        return this.reply;
+    }
+
     public Reply() {
     }
 
@@ -51,11 +54,23 @@ public class Reply extends Timestamped {
         this.reply = requestDto.getReply();
     }
 
-    public void mapToContentsAndUser(Contents contents, User user) {
-        this.contents = contents;
+    public void mapToUser(User user) {
         this.user = user;
-
-        contents.mapToReply(this);
         user.mapToReply(this);
+    }
+
+    public void mapToContents(Contents contents) {
+        this.contents = contents;
+        contents.mapToReply(this);
+    }
+
+    public void mapToUserRemove(User user) {
+        this.user = user;
+        user.mapToReplyRemove(this);
+    }
+
+    public void mapToContentsRemove(Contents contents) {
+        this.contents = contents;
+        contents.mapToReplyRemove(this);
     }
 }
