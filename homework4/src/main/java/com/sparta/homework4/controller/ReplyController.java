@@ -17,6 +17,7 @@ public class ReplyController {
     private final ReplyRepository ReplyRepository;
     private final ReplyService ReplyService;
 
+
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping({"/api/contents/{contentsId}/reply"})
     public List<Reply> getReply(@PathVariable Long contentsId) {
@@ -67,4 +68,5 @@ public class ReplyController {
         this.ReplyRepository = ReplyRepository;
         this.ReplyService = ReplyService;
     }
+
 }

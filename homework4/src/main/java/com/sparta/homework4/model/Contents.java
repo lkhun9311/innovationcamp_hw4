@@ -33,6 +33,9 @@ public class Contents extends Timestamped {
     @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<Reply> replyList = new ArrayList<>();
 
+    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<ReReply> reReplyList = new ArrayList<>();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ContentLike> contentLikeList = new ArrayList<>();
 
@@ -90,6 +93,10 @@ public class Contents extends Timestamped {
 
     public void mapToReply(Reply reply) {
         this.replyList.add(reply);
+    }
+
+    public void mapToReReply(ReReply reReply) {
+        this.reReplyList.add(reReply);
     }
 
     public void mapToContentLike(ContentLike contentLike){
