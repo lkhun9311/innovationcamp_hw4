@@ -32,7 +32,6 @@ public class ReReplyService {
         return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
     }
 
-
     @Transactional
     public Response<String> createReReply(ReReplyRequestDto requestDto, Long contentsId, Long replyId, String username, Long userId){
         Optional<User> byUserId = userRepository.findById(userId);
