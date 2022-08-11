@@ -56,4 +56,6 @@ public class User extends Timestamped {
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
     }
+
+    public void mapToReplyRemove(Reply reply) { replyList.remove(reply); }
 }
