@@ -63,6 +63,20 @@ public class ReplyController {
         }
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping("/api/contents/{contentId}/Reply/{replyId}/like")
+    public Response<String> replyLike(@PathVariable(name = "contentId") Long contentId,
+                                      @PathVariable(name = "replyId") Long replyId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return Response.success("로그인이 필요합니다.");
+        } else {
+            Long userId = userDetails.getUser().getId();
+            ReplyService.replyLike(contentId, userId, replyId);
+            return Response.success("success");
+        }
+    }
+
     public ReplyController(ReplyService ReplyService) {
         this.ReplyService = ReplyService;
     }
