@@ -1,76 +1,71 @@
 package com.sparta.homework4.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.homework4.dto.ReplyRequestDto;
-import lombok.Getter;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
-
-@Getter
 @Entity
 public class Reply extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.AUTO
+    )
     @Id
     private Long id;
-
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
+    private Long postid;
+    @Column(
+            nullable = false
+    )
     private String username;
-
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
     private String reply;
+    @Column(
+            nullable = false
+    )
+    private Long userId;
 
-    @JsonIgnore
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_reply"))
-    private User user;
-
-    @JsonIgnore
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_contents_reply"))
-    private Contents contents;
-
-    @OneToMany(fetch = LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
-    private List<ReReply> reReplyList = new ArrayList<>();
-
-    public Long getUserId() {
-        return user.getId();
-    }
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public Reply() {
-    }
-
-    public Reply(String reply, String username) {
-        this.reply = reply;
-        this.username = username;
-    }
-
-    public Reply(ReplyRequestDto requestDto, String username) {
+    public Reply(ReplyRequestDto requestDto, String username, Long userId) {
+        this.postid = requestDto.getPostid();
         this.reply = requestDto.getReply();
         this.username = username;
+        this.userId = userId;
+    }
+
+    public Reply(ReplyRequestDto requestDto, String username, Long userId, String reply) {
+        this.postid = requestDto.getPostid();
+        this.reply = reply;
+        this.username = username;
+        this.userId = userId;
     }
 
     public void update(ReplyRequestDto requestDto) {
         this.reply = requestDto.getReply();
     }
 
-    public void mapToReReply(ReReply reReply) {
-        this.reReplyList.add(reReply);
+    public Long getId() {
+        return this.id;
     }
 
-    public void mapToContentsAndUser(Contents contents, User user) {
-        this.contents = contents;
-        this.user = user;
+    public Long getPostid() {
+        return this.postid;
+    }
 
-        contents.mapToReply(this);
-        user.mapToReply(this);
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getReply() {
+        return this.reply;
+    }
+
+    public Long getUserId() {
+        return this.userId;
+    }
+
+    public Reply() {
     }
 }

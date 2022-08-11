@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
-    List<Reply> findAllByContentsIdOrderByCreatedAtDesc(Long contentsId);
+    List<Reply> findAllByPostidOrderByCreatedAtDesc(Long var1);
 
-    Long countByContentsId(Long var1);
+    int countByPostid(Long var1);
 }

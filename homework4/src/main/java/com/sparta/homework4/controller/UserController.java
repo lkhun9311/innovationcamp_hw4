@@ -26,6 +26,7 @@ public class UserController {
         }
     }
 
+    // 테스트id 가입정보 : testuser1/123123aa, testuser2/123123bb
     @PostMapping({"/user/signup"})
     public String registerUser(@RequestBody @Valid SignupRequestDto requestDto) {
         String res = this.userService.registerUser(requestDto);

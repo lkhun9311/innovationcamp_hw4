@@ -5,6 +5,8 @@ public class ContentsRequestDto {
     private String name;
     private String contents;
 
+    private String image;
+
     public ContentsRequestDto() {
     }
 
@@ -16,7 +18,7 @@ public class ContentsRequestDto {
         return this.name;
     }
 
-    public String getContents() {
-        return this.contents;
-    }
+    public String getContents() { return this.contents; }
+
+    public String getImage() { return this.image; }
 }

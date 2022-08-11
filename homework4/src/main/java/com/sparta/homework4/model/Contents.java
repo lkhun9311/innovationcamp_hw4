@@ -6,11 +6,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
@@ -23,32 +21,42 @@ public class Contents extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+
+
     @Column(nullable = false)
     private long contentLikeCount;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_contents"))
-    private User user;
 
-    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
-    private List<Reply> replyList = new ArrayList<>();
 
-    @OneToMany(fetch = LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
-    private List<ReReply> reReplyList = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
-    private List<ContentLike> contentLikeList = new ArrayList<>();
-
-    public Contents(String title, String username, String contents) {
+    public Contents(String title, String username, String contents, String image) {
         this.title = title;
         this.name = username;
         this.contents = contents;
+
     }
 
     public Contents(ContentsRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
+    }
+
+    public Contents(ContentsRequestDto requestDto, String username) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = requestDto.getContents();
+
+    }
+
+    public void update(ContentsRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+    }
+
+    public Contents(ContentsRequestDto requestDto, String username, String contents) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = contents;
     }
 
     public Long getId() {
@@ -67,37 +75,11 @@ public class Contents extends Timestamped {
         return this.contents;
     }
 
-    public Contents() {}
-
-    public Contents(ContentsRequestDto requestDto, String username) {
-        this.title = requestDto.getTitle();
-        this.name = username;
-        this.contents = requestDto.getContents();
+    public Contents() {
     }
 
-    public Contents(ContentsRequestDto requestDto, String username, String contents) {
-        this.title = requestDto.getTitle();
-        this.name = username;
-        this.contents = contents;
-    }
-
-    public void update(ContentsRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
-    }
-
-    public void mapToUser(User user) {
-        this.user = user;
-        user.mapToContents(this);
-    }
-
-    public void mapToReply(Reply reply) {
-        this.replyList.add(reply);
-    }
-
-    public void mapToReReply(ReReply reReply) {
-        this.reReplyList.add(reReply);
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<ContentLike> contentLikeList = new ArrayList<>();
 
     public void mapToContentLike(ContentLike contentLike){
         this.contentLikeList.add(contentLike);
@@ -110,4 +92,5 @@ public class Contents extends Timestamped {
     public void discountLike(ContentLike contentLike){
         this.contentLikeList.remove(contentLike);
     }
+
 }
