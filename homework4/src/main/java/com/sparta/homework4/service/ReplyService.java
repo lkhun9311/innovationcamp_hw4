@@ -1,32 +1,21 @@
 package com.sparta.homework4.service;
 
 import com.sparta.homework4.dto.ReplyRequestDto;
-import com.sparta.homework4.model.*;
-import com.sparta.homework4.repository.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import com.sparta.homework4.util.response.ContentsNotFound;
-import com.sparta.homework4.util.response.ReplyNotFound;
-import com.sparta.homework4.util.response.Response;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReplyService {
-    private final UserRepository userRepository;
-    private final ContentsRepository contentsRepository;
     private final ReplyRepository ReplyRepository;
     private final ReplyLikeRepository replyLikeRepository;
 
-    public List<Reply> getReply(Long ContentsId) {
-        return this.ReplyRepository.findAllByContentsIdOrderByCreatedAtDesc(ContentsId);
+    public List<Reply> getReply(Long postId) {
+        return this.ReplyRepository.findAllByPostidOrderByCreatedAtDesc(postId);
     }
 
     @Transactional
+
     public Response<String> createReply(Long contentsId, ReplyRequestDto requestDto, String username, Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
         User user = byUserId
@@ -40,6 +29,7 @@ public class ReplyService {
         Reply reply;
 
         if (!replyCheck.contains("script") && !replyCheck.contains("<") && !replyCheck.contains(">")) {
+
             reply = new Reply(requestDto, username);
             reply.mapToUser(user);
             reply.mapToContents(contents);
@@ -47,9 +37,9 @@ public class ReplyService {
             this.ReplyRepository.save(reply);
             return Response.<String>builder().status(200).data("댓글 작성을 완료했습니다.").build();
         } else {
-            reply = new Reply("xss 안돼요,, 하지마세요ㅠㅠ", username);
+            reply = new Reply(requestDto, username, userId, "xss 안돼요,, 하지마세요ㅠㅠ");
             this.ReplyRepository.save(reply);
-            return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
+            return reply;
         }
     }
 
@@ -65,6 +55,7 @@ public class ReplyService {
 
         if (Objects.equals(writerId, userId)) {
             reply.update(requestDto);
+
             return Response.<String>builder().status(200).data("댓글을 수정했습니다.").build();
         } else {
             return Response.<String>builder().status(200).data("댓글의 작성자가 아닙니다.").build();

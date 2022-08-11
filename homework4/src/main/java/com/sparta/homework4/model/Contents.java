@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 public class Contents extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
@@ -21,12 +21,19 @@ public class Contents extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+
+    @Column(nullable = true)
+    private String image;
+
     @Column(nullable = false)
     private long countReply;
 
     @Column(nullable = false)
     private long contentLikeCount;
 
+
+
+    public Contents(String title, String username, String contents, String image) {
     @Column(nullable = false)
     private long replyLikeCount;
 
@@ -50,6 +57,8 @@ public class Contents extends Timestamped {
         this.title = title;
         this.name = username;
         this.contents = contents;
+        this.image = image;
+
     }
 
     public Contents(String title, String username, String contents, Long countReply, Long contentLikeCount, Long replyLikeCount) {
@@ -65,6 +74,26 @@ public class Contents extends Timestamped {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
+    }
+
+    public Contents(ContentsRequestDto requestDto, String username) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = requestDto.getContents();
+        this.image = requestDto.getImage();
+
+    }
+
+    public void update(ContentsRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+    }
+
+    public Contents(ContentsRequestDto requestDto, String username, String contents) {
+        this.title = requestDto.getTitle();
+        this.name = username;
+        this.contents = contents;
     }
 
     public Long getId() {
@@ -82,6 +111,9 @@ public class Contents extends Timestamped {
     public String getContents() {
         return this.contents;
     }
+
+    public String getImage() {
+        return this.image;
 
     public Long getCountReply() { return this.countReply; }
 
@@ -101,11 +133,9 @@ public class Contents extends Timestamped {
         this.contents = requestDto.getContents();
     }
 
-    public Contents(ContentsRequestDto requestDto, String username, String contents) {
-        this.title = requestDto.getTitle();
-        this.name = username;
-        this.contents = contents;
+    public Contents() {
     }
+
 
     public void update(ContentsRequestDto requestDto) {
         this.title = requestDto.getTitle();

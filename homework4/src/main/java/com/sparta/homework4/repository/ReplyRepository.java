@@ -11,9 +11,8 @@ import com.sparta.homework4.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
-    List<Reply> findAllByContentsIdOrderByCreatedAtDesc(Long contentsId);
+    List<Reply> findAllByPostidOrderByCreatedAtDesc(Long var1);
 
-//    Optional<Reply> findByReplyAndUser(Reply reply, User user);
 
     Long countByContentsId(Long contentsId);
 }

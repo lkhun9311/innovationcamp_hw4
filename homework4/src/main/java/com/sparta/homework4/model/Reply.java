@@ -3,22 +3,29 @@ package com.sparta.homework4.model;
 import com.sparta.homework4.dto.ReplyRequestDto;
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 public class Reply extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.AUTO
+    )
     @Id
     private Long id;
-
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
+    private Long postid;
+    @Column(
+            nullable = false
+    )
     private String username;
-
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
     private String reply;
+    @Column(
+            nullable = false
+    )
+    private Long userId;
 
     @Column(nullable = false)
     private long replyLikeCount;
@@ -70,11 +77,20 @@ public class Reply extends Timestamped {
     public Reply(ReplyRequestDto requestDto, String username) {
         this.reply = requestDto.getReply();
         this.username = username;
+        this.userId = userId;
+    }
+
+    public Reply(ReplyRequestDto requestDto, String username, Long userId, String reply) {
+        this.postid = requestDto.getPostid();
+        this.reply = reply;
+        this.username = username;
+        this.userId = userId;
     }
 
     public void update(ReplyRequestDto requestDto) {
         this.reply = requestDto.getReply();
     }
+
 
     public void mapToUser(User user) {
         this.user = user;

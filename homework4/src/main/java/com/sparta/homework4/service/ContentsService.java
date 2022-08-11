@@ -25,15 +25,14 @@ public class ContentsService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Response<String> createContents(ContentsRequestDto requestDto, String username, Long userId) {
-        User user = getUserInService(userId);
-
+    public Response<String> createContents(ContentsRequestDto requestDto, String username) {
         String contentsCheck = requestDto.getContents();
         String titleCheck = requestDto.getTitle();
         Contents contents;
         if (!contentsCheck.contains("script") && !contentsCheck.contains("<") && !contentsCheck.contains(">")) {
             if (!titleCheck.contains("script") && !titleCheck.contains("<") && !titleCheck.contains(">")) {
                 contents = new Contents(requestDto, username);
+
                 contents.mapToUser(user);
                 this.contentsRepository.save(contents);
                 return Response.<String>builder().status(200).data("게시글 작성을 완료했습니다.").build();
@@ -53,6 +52,7 @@ public class ContentsService {
 
     @Transactional
     public List<ContentsResponseDto> getContents() {
+
         List<Contents> contents = contentsRepository.findAllByOrderByCreatedAtDesc();
         List<ContentsResponseDto> listContents = new ArrayList<>();
         for (Contents content : contents) {
@@ -89,6 +89,8 @@ public class ContentsService {
         }
     }
 
+
+
     private User getUserInService(Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
         User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
@@ -112,6 +114,7 @@ public class ContentsService {
             contents.discountLike(byContentsAndUser.get());
             contents.updateLikeCount();
             contentLikeRepository.delete(byContentsAndUser.get());
+//            contentLikeRepository.save(contentLike);
         } else {
             contentLike.mapToContent(contents);
             contentLike.mapToUser(user);

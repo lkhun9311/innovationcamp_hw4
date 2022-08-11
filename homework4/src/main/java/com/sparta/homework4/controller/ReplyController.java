@@ -15,24 +15,20 @@ import java.util.List;
 public class ReplyController {
     private final ReplyService ReplyService;
 
-
-    @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/contents/{contentsId}/reply"})
-    public List<Reply> getReply(@PathVariable Long contentsId) {
-        return this.ReplyService.getReply(contentsId);
+    @GetMapping({"/api/reply/{postId}"})
+    public List<Reply> getReply(@PathVariable Long postId) {
+        return this.ReplyService.getReply(postId);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents/{contentsId}/reply"})
-    public Response<String> createReply(@PathVariable(name = "contentsId") Long contentsId,
-                                        @RequestBody ReplyRequestDto requestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping({"/api/reply"})
+    public String createReply(@RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            return this.ReplyService.createReply(contentsId, requestDto, username, userId);
+            this.ReplyService.createReply(requestDto, username, userId);
+            return "댓글 작성 완료";
         } else {
-            return Response.success("로그인이 필요합니다.");
+            return "로그인이 필요한 기능입니다.";
         }
     }
 
@@ -46,7 +42,7 @@ public class ReplyController {
             Long userId = userDetails.getUser().getId();
             return this.ReplyService.update(contentsId, requestDto, userId, replyId);
         } else {
-            return Response.success("로그인이 필요합니다.");
+            return "로그인이 필요한 기능입니다.";
         }
     }
 
@@ -59,7 +55,7 @@ public class ReplyController {
             Long userId = userDetails.getUser().getId();
             return this.ReplyService.deleteReply(contentsId, replyId, userId);
         } else {
-            return Response.success("로그인이 필요합니다.");
+            return "로그인이 필요한 기능입니다.";
         }
     }
 
@@ -80,5 +76,4 @@ public class ReplyController {
     public ReplyController(ReplyService ReplyService) {
         this.ReplyService = ReplyService;
     }
-
 }
