@@ -22,15 +22,15 @@ public class ReReply extends Timestamped {
     @Column(nullable = false)
     private String reReply;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reply_id", foreignKey = @ForeignKey(name = "FK_rereply_reply"))
     private Reply reply;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_rereply_contents"))
     private Contents contents;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_rereply_user"))
     private User user;
 
