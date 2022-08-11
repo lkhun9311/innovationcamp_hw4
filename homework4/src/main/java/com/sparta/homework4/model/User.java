@@ -60,9 +60,9 @@ public class User extends Timestamped {
 
     public void mapToReplyRemove(Reply reply) { replyList.remove(reply); }
 
-    public void mapToReReply(ReReply reReply) {
-        reReplyList.add(reReply);
-    }
+    public void mapToReReply(ReReply reReply) { reReplyList.add(reReply); }
+
+    public void mapToReReplyRemove(ReReply reReply) { replyList.remove(reReply); }
 
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
