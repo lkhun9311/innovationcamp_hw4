@@ -28,9 +28,10 @@ public class ReReplyService {
     private final ReplyRepository replyRepository;
     private final ReReplyRepository reReplyRepository;
 
-    public List<ReReply> getReReply(Long replyId){
-        return this.reReplyRepository.findAllByReplyIdOrderByCreatedAtDesc(replyId);
+    public List<ReReply> getReReply(Long replyId, Long contentsId){
+        return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
     }
+
 
     @Transactional
     public Response<String> createReReply(ReReplyRequestDto requestDto, Long contentsId, Long replyId, String username, Long userId){
@@ -67,6 +68,19 @@ public class ReReplyService {
         if (Objects.equals(writerId, userId)) {
             reReply.update(requestDto);
             return "댓글 수정 완료";
+        } else {
+            return "작성한 유저가 아닙니다.";
+        }
+    }
+
+    public String deleteReply(Long id, Long replyId, Long userId) {
+        Long writerId = ((ReReply)this.reReplyRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
+        })).getUser().getId();
+
+        if (Objects.equals(writerId, userId)) {
+            this.reReplyRepository.deleteById(id);
+            return "댓글 삭제 완료";
         } else {
             return "작성한 유저가 아닙니다.";
         }

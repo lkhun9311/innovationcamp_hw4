@@ -19,8 +19,9 @@ public class ReReplyController {
     private final ReReplyService reReplyService;
 
     @GetMapping("/api/contents/{contentsId}/reply/{replyId}")
-    public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId, @PathVariable(name = "replyId") Long replyId){
-        return this.reReplyService.getReReply(replyId);
+    public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId,
+                                    @PathVariable(name = "replyId") Long replyId){
+        return this.reReplyService.getReReply(replyId, contentsId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
@@ -49,6 +50,21 @@ public class ReReplyController {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
             String result = this.reReplyService.update(id, requestDto, username, userId);
+            return result;
+        } else {
+            return "로그인이 필요한 기능입니다.";
+        }
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @DeleteMapping({"/api/contents/{contentsId}/reply/{replyId}/{id}"})
+    public String deleteReply(@PathVariable(name="contentsId") Long contentsId,
+                              @PathVariable(name="replyId") Long replyId,
+                              @PathVariable(name="id") Long id,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails != null) {
+            Long userId = userDetails.getUser().getId();
+            String result = this.reReplyService.deleteReply(id, replyId, userId);
             return result;
         } else {
             return "로그인이 필요한 기능입니다.";
