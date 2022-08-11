@@ -20,16 +20,22 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private String reply;
 
-    @ManyToOne(fetch = LAZY)
+    @Column(nullable = false)
+    private long replyLikeCount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_contents_reply"))
     private User user;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_user_reply"))
     private Contents contents;
 
-    @OneToMany(fetch = LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
     private List<ReReply> reReplyList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> replyLikeList = new ArrayList<>();
 
     public Long getUserId() {
         return user.getId();
@@ -43,12 +49,22 @@ public class Reply extends Timestamped {
         return this.reply;
     }
 
+    public Long getReplyLikeCount() {
+        return this.replyLikeCount;
+    }
+
     public Reply() {
     }
 
     public Reply(String reply, String username) {
         this.reply = reply;
         this.username = username;
+    }
+
+    public Reply(String reply, String username, Long replyLikeCount) {
+        this.reply = reply;
+        this.username = username;
+        this.replyLikeCount = replyLikeCount;
     }
 
     public Reply(ReplyRequestDto requestDto, String username) {
@@ -69,13 +85,6 @@ public class Reply extends Timestamped {
         this.reReplyList.add(reReply);
     }
 
-    public void mapToContentsAndUser(Contents contents, User user) {
-        this.contents = contents;
-        this.user = user;
-        contents.mapToReply(this);
-        user.mapToReply(this);
-    }
-
     public void mapToContents(Contents contents) {
         this.contents = contents;
         contents.mapToReply(this);
@@ -89,5 +98,13 @@ public class Reply extends Timestamped {
     public void mapToContentsRemove(Contents contents) {
         this.contents = contents;
         contents.mapToReplyRemove(this);
+    }
+
+    public void mapToReplyLike(ReplyLike replyLike){ this.replyLikeList.add(replyLike); }
+
+    public void updateLikeCount(){ this.replyLikeCount = (long) this.replyLikeList.size(); }
+
+    public void discountLike(ReplyLike replyLike){
+        this.replyLikeList.remove(replyLike);
     }
 }
