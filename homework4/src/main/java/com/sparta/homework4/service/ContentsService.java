@@ -13,14 +13,14 @@ import com.sparta.homework4.util.response.ContentsNotFound;
 import com.sparta.homework4.util.response.Response;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
 public class ContentsService {
-    private final ContentsRepository ContentsRepository;
-    private final ReplyRepository ReplyRepository;
+    private final ContentsRepository contentsRepository;
+    private final ReplyRepository replyRepository;
     private final ContentLikeRepository contentLikeRepository;
     private final UserRepository userRepository;
 
@@ -32,74 +32,74 @@ public class ContentsService {
         if (!contentsCheck.contains("script") && !contentsCheck.contains("<") && !contentsCheck.contains(">")) {
             if (!titleCheck.contains("script") && !titleCheck.contains("<") && !titleCheck.contains(">")) {
                 contents = new Contents(requestDto, username);
-                this.ContentsRepository.save(contents);
+
+                contents.mapToUser(user);
+                this.contentsRepository.save(contents);
                 return Response.<String>builder().status(200).data("게시글 작성을 완료했습니다.").build();
             } else {
-                contents = new Contents(requestDto , username, "xss 안돼요,,하지마세요ㅠㅠ");
-                this.ContentsRepository.save(contents);
+                contents = new Contents("xss 안돼요,,하지마세요ㅠㅠ", username, "xss 안돼요,,하지마세요ㅠㅠ");
+                contents.mapToUser(user);
+                this.contentsRepository.save(contents);
                 return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
             }
         } else {
             contents = new Contents(requestDto, username, "xss 안돼요,,하지마세요ㅠㅠ");
-            this.ContentsRepository.save(contents);
+            contents.mapToUser(user);
+            this.contentsRepository.save(contents);
             return Response.<String>builder().status(200).data("xss 안돼요,,하지마세요ㅠㅠ").build();
         }
     }
 
+    @Transactional
     public List<ContentsResponseDto> getContents() {
-        List<Contents> contents = this.ContentsRepository.findAllByOrderByCreatedAtDesc();
-        List<ContentsResponseDto> listContents = new ArrayList();
-        Iterator var3 = contents.iterator();
 
-        while(var3.hasNext()) {
-            Contents content = (Contents)var3.next();
-            int countReply = this.ReplyRepository.countByPostid(content.getId());
-            ContentsResponseDto contentsResponseDto = ContentsResponseDto.builder().content(content).countReply(countReply).build();
+        List<Contents> contents = contentsRepository.findAllByOrderByCreatedAtDesc();
+        List<ContentsResponseDto> listContents = new ArrayList<>();
+        for (Contents content : contents) {
+            Long countReply = replyRepository.countByContentsId(content.getId());
+            ContentsResponseDto contentsResponseDto = ContentsResponseDto.builder()
+                    .content(content)
+                    .countReply(countReply)
+                    .build();
             listContents.add(contentsResponseDto);
         }
-
         return listContents;
     }
 
     @Transactional
     public Response<String> updateContent(Long ContentId, ContentsRequestDto requestDto, String userName) {
-        Contents content = (Contents)this.ContentsRepository.findById(ContentId)
+        Contents content = this.contentsRepository.findById(ContentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         if (Objects.equals(content.getName(), userName)) {
             content.update(requestDto);
-            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 수정했습니다.").build();
+            return Response.<String>builder().status(200).data("게시글을 수정했습니다.").build();
         } else {
-            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
+            return Response.<String>builder().status(200).data("게시글의 작성자가 아닙니다.").build();
         }
     }
 
     public Response<String> deleteContent(Long ContentId, String userName) {
-        Contents content = ((Contents)this.ContentsRepository.findById(ContentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")));
+        Contents content = this.contentsRepository.findById(ContentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         if (Objects.equals(content.getName(), userName)) {
-            this.ContentsRepository.deleteById(ContentId);
-            return Response.<String>builder().status(200).data(content.getId()+"번 게시글을 삭제했습니다.").build();
+            this.contentsRepository.deleteById(ContentId);
+            return Response.<String>builder().status(200).data("게시글을 삭제했습니다.").build();
         } else {
-            return Response.<String>builder().status(200).data(content.getId()+"번 게시글의 작성자가 아닙니다.").build();
+            return Response.<String>builder().status(200).data("게시글의 작성자가 아닙니다.").build();
         }
     }
 
-    public ContentsService(ContentsRepository ContentsRepository, ReplyRepository ReplyRepository, ContentLikeRepository contentLikeRepository, UserRepository userRepository) {
-        this.ContentsRepository = ContentsRepository;
-        this.ReplyRepository = ReplyRepository;
-        this.contentLikeRepository = contentLikeRepository;
-        this.userRepository = userRepository;
-    }
 
-    private Contents getContentsInService(Long contentId) {
-        Optional<Contents> byContentId = ContentsRepository.findById(contentId);
-        return byContentId.orElseThrow(() -> new ContentsNotFound("해당 게시글이 존재하지 않습니다."));
-    }
 
     private User getUserInService(Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
-        User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("게시글 작성 권한이 없습니다. 로그인이 필요합니다."));
+        User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
         return user;
+    }
+
+    private Contents getContentsInService(Long contentId) {
+        Optional<Contents> byContentId = contentsRepository.findById(contentId);
+        return byContentId.orElseThrow(() -> new ContentsNotFound("해당 게시글이 존재하지 않습니다."));
     }
 
     @Transactional
@@ -121,5 +121,15 @@ public class ContentsService {
             contents.updateLikeCount();
             contentLikeRepository.save(contentLike);
         }
+    }
+
+    public ContentsService(ContentsRepository contentsRepository,
+                           ReplyRepository replyRepository,
+                           ContentLikeRepository contentLikeRepository,
+                           UserRepository userRepository) {
+        this.contentsRepository = contentsRepository;
+        this.replyRepository = replyRepository;
+        this.contentLikeRepository = contentLikeRepository;
+        this.userRepository = userRepository;
     }
 }

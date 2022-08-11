@@ -20,6 +20,25 @@ public class User extends Timestamped {
     )
     private String password;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Contents> contentList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Reply> replyList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReReply> reReplyList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ContentLike> contentLikeList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> replyLikeList = new ArrayList<>();
+
+    public User() {
+    }
+
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -52,10 +71,21 @@ public class User extends Timestamped {
     public User() {
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<ContentLike> contentLikeList = new ArrayList<>();
+    public void mapToReply(Reply reply) {
+        replyList.add(reply);
+    }
+
+    public void mapToReplyRemove(Reply reply) { replyList.remove(reply); }
+
+    public void mapToReReply(ReReply reReply) {
+        reReplyList.add(reReply);
+    }
 
     public void mapToContentLike(ContentLike contentLike) {
         this.contentLikeList.add(contentLike);
     }
+
+    public void mapToReplyLike(ReplyLike replyLike) { this.replyLikeList.add(replyLike); }
+
+    public void discountReplyLike(ReplyLike replyLike) { this.replyLikeList.remove(replyLike); }
 }
