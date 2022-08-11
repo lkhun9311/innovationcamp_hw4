@@ -19,8 +19,12 @@ public class ReReplyController {
     private final ReReplyService reReplyService;
 
     @GetMapping("/api/contents/{contentsId}/reply/{replyId}")
+<<<<<<< HEAD
     public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId,
                                     @PathVariable(name = "replyId") Long replyId){
+=======
+    public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId, @PathVariable(name = "replyId") Long replyId){
+>>>>>>> 590871aec317df9e50e8572e6517007002f26b0c
         return this.reReplyService.getReReply(replyId, contentsId);
     }
 

@@ -19,9 +19,9 @@ public class ReplyController {
 
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/reply/{postId}"})
-    public List<Reply> getReply(@PathVariable Long postId) {
-        return this.ReplyService.getReply(postId);
+    @GetMapping({"/api/contents/{contentsId}/reply"})
+    public List<Reply> getReply(@PathVariable(name="contentsId") Long contentsId) {
+        return this.ReplyService.getReply(contentsId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
