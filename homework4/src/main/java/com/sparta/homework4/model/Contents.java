@@ -24,6 +24,9 @@ public class Contents extends Timestamped {
     private String contents;
 
     @Column(nullable = false)
+    private long countReply;
+
+    @Column(nullable = false)
     private long contentLikeCount;
 
     @ManyToOne(fetch = LAZY)
@@ -40,6 +43,14 @@ public class Contents extends Timestamped {
         this.title = title;
         this.name = username;
         this.contents = contents;
+    }
+
+    public Contents(String title, String username, String contents, Long countReply, Long contentLikeCount) {
+        this.title = title;
+        this.name = username;
+        this.contents = contents;
+        this.countReply = countReply;
+        this.contentLikeCount = contentLikeCount;
     }
 
     public Contents(ContentsRequestDto requestDto) {
@@ -62,6 +73,12 @@ public class Contents extends Timestamped {
 
     public String getContents() {
         return this.contents;
+    }
+
+    public Long getCountReply() { return this.countReply; }
+
+    public Long getContentLikeCount() {
+        return this.contentLikeCount;
     }
 
     public Contents() {}
@@ -89,11 +106,17 @@ public class Contents extends Timestamped {
     }
 
     public void mapToReply(Reply reply) {
-        this.replyList.add(reply);
+        replyList.add(reply);
     }
 
-    public void mapToContentLike(ContentLike contentLike){
-        this.contentLikeList.add(contentLike);
+    public void mapToReplyRemove(Reply reply) {
+        replyList.remove(reply);
+    }
+
+    public void mapToContentLike(ContentLike contentLike){ this.contentLikeList.add(contentLike); }
+
+    public void updateReplyCount(){
+        this.countReply = (long) this.replyList.size();
     }
 
     public void updateLikeCount(){
