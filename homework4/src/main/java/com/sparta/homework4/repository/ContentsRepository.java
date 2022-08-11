@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ContentsRepository extends JpaRepository<Contents, Long> {
     List<Contents> findAllByOrderByCreatedAtDesc();
+
+    List<Contents> findAllByUserIdOrderByCreatedAtDesc(Long userId);
 }
