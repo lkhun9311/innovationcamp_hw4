@@ -1,6 +1,5 @@
 package com.sparta.homework4.service;
 
-import com.sparta.homework4.dto.ContentsResponseDto;
 import com.sparta.homework4.dto.ReplyRequestDto;
 import com.sparta.homework4.dto.ReplyResponseDto;
 import com.sparta.homework4.model.*;
