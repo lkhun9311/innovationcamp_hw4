@@ -1,6 +1,7 @@
 package com.sparta.homework4.model;
 
 import com.sparta.homework4.dto.ContentsRequestDto;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,9 +22,6 @@ public class Contents extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = true)
-    private String image;
-
     @Column(nullable = false)
     private long countReply;
 
@@ -35,6 +33,9 @@ public class Contents extends Timestamped {
 
     @Column(nullable = false)
     private long replyLikeCount;
+
+    @Column(nullable = false)
+    private long reReplyLikeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_user_contents"))
@@ -52,17 +53,13 @@ public class Contents extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
     private List<ReplyLike> replyLikeList = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contents", cascade = CascadeType.REMOVE)
+    private List<ReReplyLike> reReplyLikeList = new ArrayList<>();
+
     public Contents(String title, String username, String contents) {
         this.title = title;
         this.name = username;
         this.contents = contents;
-    }
-
-    public Contents(String title, String username, String contents, String image) {
-        this.title = title;
-        this.name = username;
-        this.contents = contents;
-        this.image = image;
     }
 
     public Contents(String title,
@@ -71,7 +68,8 @@ public class Contents extends Timestamped {
                     Long countReply,
                     Long countReReply,
                     Long contentLikeCount,
-                    Long replyLikeCount) {
+                    Long replyLikeCount,
+                    Long reReplyLikeCount) {
         this.title = title;
         this.name = username;
         this.contents = contents;
@@ -79,13 +77,13 @@ public class Contents extends Timestamped {
         this.countReReply = countReReply;
         this.contentLikeCount = contentLikeCount;
         this.replyLikeCount = replyLikeCount;
+        this.reReplyLikeCount = reReplyLikeCount;
     }
 
     public Contents(ContentsRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
         this.contents = requestDto.getContents();
-        this.image = requestDto.getImage();
     }
 
     public Long getId() { return this.id; }
@@ -100,10 +98,6 @@ public class Contents extends Timestamped {
 
     public String getContents() {
         return this.contents;
-    }
-
-    public String getImage() {
-        return this.image;
     }
 
     public Long getCountReply() {
@@ -122,13 +116,16 @@ public class Contents extends Timestamped {
         return this.replyLikeCount;
     }
 
+    public Long getReReplyLikeCount() {
+        return this.reReplyLikeCount;
+    }
+
     public Contents() {}
 
     public Contents(ContentsRequestDto requestDto, String username) {
         this.title = requestDto.getTitle();
         this.name = username;
         this.contents = requestDto.getContents();
-        this.image = requestDto.getImage();
     }
 
     public Contents(ContentsRequestDto requestDto, String username, String contents) {
@@ -165,24 +162,22 @@ public class Contents extends Timestamped {
         this.replyLikeList.add(replyLike);
     }
 
+    public void mapToReReplyLike(ReReplyLike reReplyLike) { this.reReplyLikeList.add(reReplyLike); }
+
     public void updateReplyCount() { this.countReply = (long) this.replyList.size(); }
 
     public void updateReReplyCount() { this.countReReply = (long) this.reReplyList.size(); }
 
-    public void updateLikeCount() {
-        this.contentLikeCount = (long) this.contentLikeList.size();
-    }
+    public void updateLikeCount() { this.contentLikeCount = (long) this.contentLikeList.size(); }
 
-    public void updateReplyLikeCount() {
-        this.replyLikeCount = (long) this.replyLikeList.size();
-    }
+    public void updateReplyLikeCount() { this.replyLikeCount = (long) this.replyLikeList.size(); }
 
-    public void discountLike(ContentLike contentLike) {
-        this.contentLikeList.remove(contentLike);
-    }
+    public void updateReReplyLikeCount() { this.reReplyLikeCount = (long) this.reReplyLikeList.size(); }
 
-    public void discountReplyLike(ReplyLike replyLike) {
-        this.replyLikeList.remove(replyLike);
-    }
+    public void discountLike(ContentLike contentLike) { this.contentLikeList.remove(contentLike); }
+
+    public void discountReplyLike(ReplyLike replyLike) { this.replyLikeList.remove(replyLike);}
+
+    public void discountReReplyLike(ReReplyLike reReplyLike) { this.reReplyLikeList.remove(reReplyLike); }
 }
 
