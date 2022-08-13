@@ -1,14 +1,8 @@
 package com.sparta.homework4.service;
 
 import com.sparta.homework4.dto.ReReplyRequestDto;
-import com.sparta.homework4.model.Contents;
-import com.sparta.homework4.model.ReReply;
-import com.sparta.homework4.model.Reply;
-import com.sparta.homework4.model.User;
-import com.sparta.homework4.repository.ContentsRepository;
-import com.sparta.homework4.repository.ReReplyRepository;
-import com.sparta.homework4.repository.ReplyRepository;
-import com.sparta.homework4.repository.UserRepository;
+import com.sparta.homework4.model.*;
+import com.sparta.homework4.repository.*;
 import com.sparta.homework4.util.response.ContentsNotFound;
 import com.sparta.homework4.util.response.ReReplyNotFound;
 import com.sparta.homework4.util.response.ReplyNotFound;
@@ -27,6 +21,7 @@ public class ReReplyService {
     private final ContentsRepository contentsRepository;
     private final ReplyRepository replyRepository;
     private final ReReplyRepository reReplyRepository;
+    private final ReReplyLikeRepository reReplyLikeRepository;
 
     public List<ReReply> getReReply(Long replyId, Long contentsId){
         return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
@@ -114,13 +109,58 @@ public class ReReplyService {
         }
     }
 
+    @Transactional
+    public void reReplyLike(Long contentId, Long userId, Long replyId, Long reReplyId) {
+        Optional<Contents> byContentsId = contentsRepository.findById(contentId);
+        Contents contents = byContentsId
+                .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
+
+        Optional<User> byUserId = userRepository.findById(userId);
+        User user = byUserId
+                .orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
+
+        Optional<Reply> byReplyId = this.replyRepository.findById(replyId);
+        Reply reply = byReplyId
+                .orElseThrow(() -> new ReplyNotFound("해당 댓글이 삭제되었거나 존재하지 않습니다."));
+
+        Optional<ReReply> byReReplyId = this.reReplyRepository.findById(reReplyId);
+        ReReply reReply = byReReplyId
+                .orElseThrow(() -> new ReReplyNotFound("해당 대댓글이 삭제되었거나 존재하지 않습니다."));
+
+        Optional<ReReplyLike> byReReplyAndReplyAndContentsAndUser = reReplyLikeRepository.findByReReplyAndReplyAndContentsAndUser(reReply, reply, contents, user);
+
+        ReReplyLike reReplyLike = ReReplyLike.builder().build();
+
+        if(byReReplyAndReplyAndContentsAndUser.isPresent()){
+            reReply.discountReReplyLike(byReReplyAndReplyAndContentsAndUser.get());
+            reply.discountReReplyLike(byReReplyAndReplyAndContentsAndUser.get());
+            contents.discountReReplyLike(byReReplyAndReplyAndContentsAndUser.get());
+            user.discountReReplyLike(byReReplyAndReplyAndContentsAndUser.get());
+            reReply.updateReReplyLikeCount();
+            reply.updateReReplyLikeCount();
+            contents.updateReReplyLikeCount();
+            reReplyLikeRepository.delete(byReReplyAndReplyAndContentsAndUser.get());
+        } else {
+            reReplyLike.mapToReReply(reReply);
+            reReplyLike.mapToReply(reply);
+            reReplyLike.mapToContent(contents);
+            reReplyLike.mapToUser(user);
+            reReply.updateReReplyLikeCount();
+            reply.updateReReplyLikeCount();
+            contents.updateReReplyLikeCount();
+            reReplyLikeRepository.save(reReplyLike);
+        }
+    }
+
     public ReReplyService(UserRepository userRepository,
                           ContentsRepository contentsRepository,
                           ReplyRepository replyRepository,
-                          ReReplyRepository reReplyRepository) {
+                          ReReplyRepository reReplyRepository,
+                          ReReplyLikeRepository reReplyLikeRepository) {
         this.userRepository = userRepository;
         this.contentsRepository = contentsRepository;
         this.replyRepository = replyRepository;
         this.reReplyRepository = reReplyRepository;
+        this.reReplyLikeRepository = reReplyLikeRepository;
     }
 }
