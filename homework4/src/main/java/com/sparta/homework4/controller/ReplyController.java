@@ -1,9 +1,7 @@
 package com.sparta.homework4.controller;
 
-import com.sparta.homework4.dto.ContentsResponseDto;
 import com.sparta.homework4.dto.ReplyRequestDto;
 import com.sparta.homework4.dto.ReplyResponseDto;
-import com.sparta.homework4.model.Reply;
 import com.sparta.homework4.security.UserDetailsImpl;
 import com.sparta.homework4.service.ReplyService;
 import com.sparta.homework4.util.response.Response;
