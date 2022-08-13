@@ -13,11 +13,12 @@ public class ContentsResponseDto {
     private String title;
     private String name;
     private String contents;
-    private String image;
     private Long countReply;
     private Long countReReply;
     private Long contentLikeCount;
     private Long replyLikeCount;
+
+    private Long reReplyLikeCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
@@ -30,11 +31,11 @@ public class ContentsResponseDto {
         this.title = content.getTitle();
         this.name = content.getName();
         this.contents = content.getContents();
-        this.image = content.getImage();
         this.contentLikeCount = content.getContentLikeCount();
         this.countReply = countReply;
         this.countReReply = content.getCountReReply();
         this.replyLikeCount = content.getReplyLikeCount();
+        this.reReplyLikeCount = content.getReReplyLikeCount();
         this.createdAt = content.getCreatedAt();
         this.modifiedAt = content.getModifiedAt();
     }
