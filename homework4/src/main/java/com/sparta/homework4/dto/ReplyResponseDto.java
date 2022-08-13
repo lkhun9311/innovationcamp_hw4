@@ -14,6 +14,7 @@ public class ReplyResponseDto {
     private String reply;
     private Long countReReply;
     private Long replyLikeCount;
+    private Long reReplyLikeCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
@@ -27,6 +28,7 @@ public class ReplyResponseDto {
         this.reply = reply.getReply();
         this.countReReply = countReReply;
         this.replyLikeCount = reply.getReplyLikeCount();
+        this.reReplyLikeCount = reply.getReReplyLikeCount();
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();
     }
