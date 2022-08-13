@@ -19,21 +19,21 @@ public class ContentsController {
     private final ContentsService ContentsService;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/contents"})
+    @GetMapping({"/contents"})
     public List<ContentsResponseDto> getContents() {
         return this.ContentsService.getContents();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/contents/{id}"})
-    public Contents getContents(@PathVariable Long id) {
-        Contents contents = this.ContentsRepository.findById(id)
+    @GetMapping({"/contents/{contentId}"})
+    public Contents getContents(@PathVariable(name = "contentId") Long contentId) {
+        Contents contents = this.ContentsRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
         return contents;
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents"})
+    @PostMapping({"/contents"})
     public Response<String> createContents(@RequestBody ContentsRequestDto requestDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
@@ -46,7 +46,7 @@ public class ContentsController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping("/api/contents/{contentId}")
+    @PutMapping("/contents/{contentId}")
     public Response<String> updateContent(@PathVariable(name = "contentId") Long contentId,
                                           @RequestBody ContentsRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -58,7 +58,7 @@ public class ContentsController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping("/api/contents/{contentId}")
+    @DeleteMapping("/contents/{contentId}")
     public Response<String> deleteContent(@PathVariable(name = "contentId") Long contentId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
@@ -69,7 +69,7 @@ public class ContentsController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/like")
+    @PostMapping("/contents/{contentId}/like")
     public Response<String> contentLike(@PathVariable(name = "contentId") Long contentId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {

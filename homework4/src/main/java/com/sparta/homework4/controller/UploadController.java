@@ -18,7 +18,7 @@ public class UploadController {
     private final S3Uploader s3Uploader;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/images")
+    @PostMapping("/contents/{contentId}/images")
     @ResponseBody
     public Response<String> upload(@RequestParam("images") MultipartFile multipartFile,
                          @PathVariable(name = "contentId") Long contentId,

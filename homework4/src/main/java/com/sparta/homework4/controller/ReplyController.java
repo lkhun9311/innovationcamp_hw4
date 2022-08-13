@@ -16,54 +16,54 @@ public class ReplyController {
     private final ReplyService ReplyService;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/contents/{contentsId}/replys"})
-    public List<ReplyResponseDto> getReply(@PathVariable Long contentsId) {
-        return this.ReplyService.getReply(contentsId);
+    @GetMapping({"/contents/{contentId}/replys"})
+    public List<ReplyResponseDto> getReply(@PathVariable(name = "contentId") Long contentId) {
+        return this.ReplyService.getReply(contentId);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents/{contentsId}/replys"})
-    public Response<String> createReply(@PathVariable(name = "contentsId") Long contentsId,
+    @PostMapping({"/contents/{contentId}/replys"})
+    public Response<String> createReply(@PathVariable(name = "contentId") Long contentId,
                                         @RequestBody ReplyRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
             String username = userDetails.getUser().getUsername();
-            return this.ReplyService.createReply(contentsId, requestDto, username, userId);
+            return this.ReplyService.createReply(contentId, requestDto, username, userId);
         } else {
             return Response.success("로그인이 필요합니다.");
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping({"/api/contents/{contentsId}/replys/{replyId}"})
-    public Response<String> updateReply(@PathVariable(name = "contentsId") Long contentsId,
+    @PutMapping({"/contents/{contentId}/replys/{replyId}"})
+    public Response<String> updateReply(@PathVariable(name = "contentId") Long contentId,
                                         @RequestBody ReplyRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
                                         @PathVariable(name = "replyId") Long replyId) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            return this.ReplyService.update(contentsId, requestDto, userId, replyId);
+            return this.ReplyService.update(contentId, requestDto, userId, replyId);
         } else {
             return Response.success("로그인이 필요합니다.");
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping({"/api/contents/{contentsId}/replys/{replyId}"})
-    public Response<String> deleteReply(@PathVariable(name = "contentsId") Long contentsId,
+    @DeleteMapping({"/contents/{contentId}/replys/{replyId}"})
+    public Response<String> deleteReply(@PathVariable(name = "contentId") Long contentId,
                                         @PathVariable(name = "replyId") Long replyId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            return this.ReplyService.deleteReply(contentsId, replyId, userId);
+            return this.ReplyService.deleteReply(contentId, replyId, userId);
         } else {
             return Response.success("로그인이 필요합니다.");
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/replys/{replyId}/like")
+    @PostMapping("/contents/{contentId}/replys/{replyId}/like")
     public Response<String> replyLike(@PathVariable(name = "contentId") Long contentId,
                                       @PathVariable(name = "replyId") Long replyId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {

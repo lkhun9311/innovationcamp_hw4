@@ -26,12 +26,12 @@ public class ReplyService {
     private final ReplyLikeRepository replyLikeRepository;
 
     @Transactional
-    public List<ReplyResponseDto> getReply(Long contentsId) {
-        Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
+    public List<ReplyResponseDto> getReply(Long contentId) {
+        Optional<Contents> byContentsId = contentsRepository.findById(contentId);
         Contents contents = byContentsId
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        List<Reply> replys = replyRepository.findAllByContentsIdOrderByCreatedAtDesc(contentsId);
+        List<Reply> replys = replyRepository.findAllByContentsIdOrderByCreatedAtDesc(contentId);
         List<ReplyResponseDto> listReplys = new ArrayList<>();
 
         for (Reply reply : replys) {
@@ -46,12 +46,12 @@ public class ReplyService {
     }
 
     @Transactional
-    public Response<String> createReply(Long contentsId, ReplyRequestDto requestDto, String username, Long userId) {
+    public Response<String> createReply(Long contentId, ReplyRequestDto requestDto, String username, Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
         User user = byUserId
                 .orElseThrow(() -> new UsernameNotFoundException("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
+        Optional<Contents> byContentsId = contentsRepository.findById(contentId);
         Contents contents = byContentsId
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
@@ -73,8 +73,8 @@ public class ReplyService {
     }
 
     @Transactional
-    public Response<String> update(Long contentsId, ReplyRequestDto requestDto, Long userId, Long replyId) {
-        Contents contents = this.contentsRepository.findById(contentsId)
+    public Response<String> update(Long contentId, ReplyRequestDto requestDto, Long userId, Long replyId) {
+        Contents contents = this.contentsRepository.findById(contentId)
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
         Reply reply = this.replyRepository.findById(replyId)
@@ -91,12 +91,12 @@ public class ReplyService {
     }
 
     @Transactional
-    public Response<String> deleteReply(Long contentsId, Long replyId, Long userId) {
+    public Response<String> deleteReply(Long contentId, Long replyId, Long userId) {
         Optional<User> byUserId = userRepository.findById(userId);
         User user = byUserId
                 .orElseThrow(() -> new UsernameNotFoundException("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
+        Optional<Contents> byContentsId = contentsRepository.findById(contentId);
         Contents contents = byContentsId
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 

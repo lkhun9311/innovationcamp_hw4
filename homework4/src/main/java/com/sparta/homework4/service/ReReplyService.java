@@ -23,16 +23,16 @@ public class ReReplyService {
     private final ReReplyRepository reReplyRepository;
     private final ReReplyLikeRepository reReplyLikeRepository;
 
-    public List<ReReply> getReReply(Long replyId, Long contentsId){
-        return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentsId);
+    public List<ReReply> getReReply(Long replyId, Long contentId){
+        return this.reReplyRepository.findAllByReplyIdAndContentsIdOrderByCreatedAtDesc(replyId, contentId);
     }
 
     @Transactional
-    public Response<String> createReReply(ReReplyRequestDto requestDto, Long contentsId, Long replyId, String username, Long userId){
+    public Response<String> createReReply(ReReplyRequestDto requestDto, Long contentId, Long replyId, String username, Long userId){
         Optional<User> byUserId = userRepository.findById(userId);
         User user = byUserId.orElseThrow(() -> new UsernameNotFoundException("로그인이 필요합니다."));
 
-        Optional<Contents> byContentsId = contentsRepository.findById(contentsId);
+        Optional<Contents> byContentsId = contentsRepository.findById(contentId);
         Contents contents = byContentsId.orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
         Optional<Reply> byReplyId = replyRepository.findById(replyId);
@@ -57,11 +57,11 @@ public class ReReplyService {
     }
 
     @Transactional
-    public String update(Long rereplyId, ReReplyRequestDto requestDto, Long userId, Long contentsId, Long replyId) {
+    public String update(Long rereplyId, ReReplyRequestDto requestDto, Long userId, Long contentId, Long replyId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Contents contents = contentsRepository.findById(contentsId)
+        Contents contents = contentsRepository.findById(contentId)
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
         Reply reply = replyRepository.findById(replyId)
@@ -81,11 +81,11 @@ public class ReReplyService {
     }
 
     @Transactional
-    public String deleteReply(Long rereplyId, Long replyId, Long contentsId, Long userId) {
+    public String deleteReply(Long rereplyId, Long replyId, Long contentId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
-        Contents contents = contentsRepository.findById(contentsId)
+        Contents contents = contentsRepository.findById(contentId)
                 .orElseThrow(() -> new ContentsNotFound("해당 게시글이 삭제되었거나 존재하지 않습니다."));
 
         Reply reply = replyRepository.findById(replyId)

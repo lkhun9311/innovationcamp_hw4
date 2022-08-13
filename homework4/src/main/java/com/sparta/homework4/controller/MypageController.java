@@ -27,7 +27,7 @@ public class MypageController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/mypage/reply"})
+    @GetMapping({"/mypage/reply"})
     private List<Reply> getMyReply(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         if (userDetails != null) {
@@ -40,7 +40,7 @@ public class MypageController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping({"/api/mypage/contents"})
+    @GetMapping({"/mypage/contents"})
     public List<Contents> getMypageContents(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if(userDetails != null){
             Long userId = userDetails.getUser().getId();

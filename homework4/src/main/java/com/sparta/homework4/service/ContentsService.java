@@ -67,8 +67,8 @@ public class ContentsService {
     }
 
     @Transactional
-    public Response<String> updateContent(Long ContentId, ContentsRequestDto requestDto, String userName) {
-        Contents content = this.contentsRepository.findById(ContentId)
+    public Response<String> updateContent(Long contentId, ContentsRequestDto requestDto, String userName) {
+        Contents content = this.contentsRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         if (Objects.equals(content.getName(), userName)) {
             content.update(requestDto);
@@ -78,11 +78,11 @@ public class ContentsService {
         }
     }
 
-    public Response<String> deleteContent(Long ContentId, String userName) {
-        Contents content = this.contentsRepository.findById(ContentId)
+    public Response<String> deleteContent(Long contentId, String userName) {
+        Contents content = this.contentsRepository.findById(contentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         if (Objects.equals(content.getName(), userName)) {
-            this.contentsRepository.deleteById(ContentId);
+            this.contentsRepository.deleteById(contentId);
             return Response.<String>builder().status(200).data("게시글을 삭제했습니다.").build();
         } else {
             return Response.<String>builder().status(200).data("게시글의 작성자가 아닙니다.").build();

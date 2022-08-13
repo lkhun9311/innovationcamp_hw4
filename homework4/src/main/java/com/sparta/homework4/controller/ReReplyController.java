@@ -19,22 +19,22 @@ public class ReReplyController {
     private final ReReplyService reReplyService;
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("/api/contents/{contentsId}/replys/{replyId}/rereplys")
-    public List<ReReply> getReReply(@PathVariable(name = "contentsId") Long contentsId, @PathVariable(name = "replyId") Long replyId){
-        return this.reReplyService.getReReply(replyId, contentsId);
+    @GetMapping("/contents/{contentId}/replys/{replyId}/rereplys")
+    public List<ReReply> getReReply(@PathVariable(name = "contentId") Long contentId, @PathVariable(name = "replyId") Long replyId){
+        return this.reReplyService.getReReply(replyId, contentId);
     }
 
     @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys"})
-    public Response<String> createReReply(@PathVariable(name="contentsId") Long contentsId,
+    @PostMapping({"/contents/{contentId}/replys/{replyId}/rereplys"})
+    public Response<String> createReReply(@PathVariable(name="contentId") Long contentId,
                                           @PathVariable(name="replyId") Long replyId,
                                           @RequestBody ReReplyRequestDto requestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
         if (userDetails != null){
            Long userId = userDetails.getUser().getId();
            String username = userDetails.getUser().getUsername();
-           return this.reReplyService.createReReply(requestDto, contentsId, replyId, username, userId);
+           return this.reReplyService.createReReply(requestDto, contentId, replyId, username, userId);
         }else{
             return Response.success("로그인이 필요합니다.");
         }
@@ -42,15 +42,15 @@ public class ReReplyController {
 
     @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @PutMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys/{rereplyId}"})
-    public String updateReReply(@PathVariable(name="contentsId") Long contentsId,
+    @PutMapping({"/contents/{contentId}/replys/{replyId}/rereplys/{rereplyId}"})
+    public String updateReReply(@PathVariable(name="contentId") Long contentId,
                                 @PathVariable(name="replyId") Long replyId,
                                 @PathVariable(name="rereplyId") Long rereplyId,
                               @RequestBody ReReplyRequestDto requestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            return this.reReplyService.update(rereplyId, requestDto, userId, contentsId, replyId);
+            return this.reReplyService.update(rereplyId, requestDto, userId, contentId, replyId);
         } else {
             return "로그인이 필요한 기능입니다.";
         }
@@ -58,21 +58,21 @@ public class ReReplyController {
 
     @Transactional
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping({"/api/contents/{contentsId}/replys/{replyId}/rereplys/{rereplyId}"})
-    public String deleteReply(@PathVariable(name="contentsId") Long contentsId,
+    @DeleteMapping({"/contents/{contentId}/replys/{replyId}/rereplys/{rereplyId}"})
+    public String deleteReply(@PathVariable(name="contentId") Long contentId,
                               @PathVariable(name="replyId") Long replyId,
                               @PathVariable(name="rereplyId") Long rereplyId,
                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             Long userId = userDetails.getUser().getId();
-            return this.reReplyService.deleteReply(rereplyId, replyId, contentsId, userId);
+            return this.reReplyService.deleteReply(rereplyId, replyId, contentId, userId);
         } else {
             return "로그인이 필요한 기능입니다.";
         }
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping("/api/contents/{contentId}/replys/{replyId}/rereplys/{rereplyId}/like")
+    @PostMapping("/contents/{contentId}/replys/{replyId}/rereplys/{rereplyId}/like")
     public Response<String> reReplyLike(@PathVariable(name = "contentId") Long contentId,
                                       @PathVariable(name = "replyId") Long replyId,
                                       @PathVariable(name = "rereplyId") Long reReplyId,
