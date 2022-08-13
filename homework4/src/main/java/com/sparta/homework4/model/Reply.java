@@ -24,12 +24,15 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private long replyLikeCount;
 
+    @Column(nullable = false)
+    private long reReplyLikeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_contents_reply"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_reply_user"))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_user_reply"))
+    @JoinColumn(name = "contents_id", foreignKey = @ForeignKey(name = "FK_reply_contents"))
     private Contents contents;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
@@ -37,6 +40,9 @@ public class Reply extends Timestamped {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
     private List<ReplyLike> replyLikeList = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
+    private List<ReReplyLike> reReplyLikeList = new ArrayList<>();
 
     public Long getId() {
         return this.id;
@@ -62,6 +68,10 @@ public class Reply extends Timestamped {
         return this.replyLikeCount;
     }
 
+    public Long getReReplyLikeCount() {
+        return this.reReplyLikeCount;
+    }
+
     public Reply() {}
 
     public Reply(String reply, String username) {
@@ -69,10 +79,11 @@ public class Reply extends Timestamped {
         this.username = username;
     }
 
-    public Reply(String reply, String username, Long replyLikeCount) {
+    public Reply(String reply, String username, Long replyLikeCount, Long reReplyLikeCount) {
         this.reply = reply;
         this.username = username;
         this.replyLikeCount = replyLikeCount;
+        this.reReplyLikeCount = reReplyLikeCount;
     }
 
     public Reply(ReplyRequestDto requestDto, String username) {
@@ -112,11 +123,21 @@ public class Reply extends Timestamped {
 
     public void mapToReplyLike(ReplyLike replyLike){ this.replyLikeList.add(replyLike); }
 
+    public void mapToReReplyLike(ReReplyLike reReplyLike) { this.reReplyLikeList.add(reReplyLike); }
+
     public void updateReReplyCount() { this.countReReply = (long) this.reReplyList.size(); }
 
     public void updateLikeCount(){ this.replyLikeCount = (long) this.replyLikeList.size(); }
 
+    public void updateReReplyLikeCount() {
+        this.reReplyLikeCount = (long) this.reReplyLikeList.size();
+    }
+
     public void discountLike(ReplyLike replyLike){
         this.replyLikeList.remove(replyLike);
     }
+
+    public void discountReReplyLike(ReReplyLike reReplyLike){ this.reReplyLikeList.remove(reReplyLike); }
+
+
 }
