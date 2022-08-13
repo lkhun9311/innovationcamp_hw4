@@ -71,6 +71,21 @@ public class ReReplyController {
         }
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping("/api/contents/{contentId}/replys/{replyId}/rereplys/{rereplyId}/like")
+    public Response<String> reReplyLike(@PathVariable(name = "contentId") Long contentId,
+                                      @PathVariable(name = "replyId") Long replyId,
+                                      @PathVariable(name = "rereplyId") Long reReplyId,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            return Response.success("로그인이 필요합니다.");
+        } else {
+            Long userId = userDetails.getUser().getId();
+            reReplyService.reReplyLike(contentId, userId, replyId, reReplyId);
+            return Response.success("success");
+        }
+    }
+
     public ReReplyController(ReReplyRepository reReplyRepository, ReReplyService reReplyService){
         this.reReplyService = reReplyService;
         this.reReplyRepository = reReplyRepository;
